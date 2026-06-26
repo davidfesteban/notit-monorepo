@@ -8,7 +8,7 @@ export function loadSession() {
     token: localStorage.getItem(tokenKey) || '',
     repo: readJson(repoKey, null),
     commitMeta: readJson(commitMetaKey, {}),
-    settings: readJson(settingsKey, { autosaveEnabled: true }),
+    settings: readJson(settingsKey, { autosaveEnabled: true, autosaveMinutes: 5 }),
   }
 }
 

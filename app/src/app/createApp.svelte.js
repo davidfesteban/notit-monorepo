@@ -13,6 +13,7 @@ export function createApp() {
   const editor = createEditorState(notes)
   const layout = createLayoutState()
   let autosaveEnabled = $state(session.settings?.autosaveEnabled !== false)
+  let autosaveMinutes = $state(session.settings?.autosaveMinutes || 5)
   let autosaveTimer = null
 
   const loading = $derived(repo.loading || notes.loading)
@@ -38,15 +39,26 @@ export function createApp() {
 
   function setAutosaveEnabled(value) {
     autosaveEnabled = value
-    saveSettings({ autosaveEnabled })
+    saveSettings({ autosaveEnabled, autosaveMinutes })
+    startAutosave()
+  }
+
+  function setAutosaveMinutes(value) {
+    autosaveMinutes = Number(value) === 10 ? 10 : 5
+    saveSettings({ autosaveEnabled, autosaveMinutes })
+    startAutosave()
   }
 
   function startAutosave() {
     stopAutosave()
     autosaveTimer = setInterval(() => {
-      if (autosaveEnabled) notes.saveDirty(repo.client, repo.repo, 'autosave')
-    }, 5 * 60 * 1000)
+      if (autosaveEnabled) notes.syncPending(repo.client, repo.repo, 'autosave')
+    }, autosaveMinutes * 60 * 1000)
     return stopAutosave
+  }
+
+  async function forceSync() {
+    await notes.syncPending(repo.client, repo.repo, 'manual')
   }
 
   function stopAutosave() {
@@ -56,7 +68,7 @@ export function createApp() {
   }
 
   function protectUnload(event) {
-    if (!notes.hasDirtyDrafts) return
+    if (!notes.hasPendingGithubChanges) return
     event.preventDefault()
     event.returnValue = ''
   }
@@ -68,7 +80,11 @@ export function createApp() {
     editor,
     layout,
     get autosaveEnabled() { return autosaveEnabled },
+    get autosaveMinutes() { return autosaveMinutes },
+    get syncStatus() { return notes.hasPendingGithubChanges ? 'Unsync' : 'Synced' },
     setAutosaveEnabled,
+    setAutosaveMinutes,
+    forceSync,
     get loading() { return loading },
     get status() { return status },
     get error() { return error },

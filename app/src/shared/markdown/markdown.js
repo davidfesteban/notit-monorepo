@@ -3,7 +3,7 @@ import { marked } from 'marked'
 
 const renderer = {
   code(token) {
-    if (token.lang === 'mermaid') {
+    if (String(token.lang || '').trim().toLowerCase() === 'mermaid') {
       return `<div class="mermaid" data-source="${escapeHtml(token.text)}">${escapeHtml(token.text)}</div>`
     }
 
@@ -22,6 +22,7 @@ export function renderMarkdown(markdown) {
   return DOMPurify.sanitize(marked.parse(markdown || ''), {
     ADD_TAGS: ['input'],
     ADD_ATTR: ['checked', 'class', 'data-source', 'type'],
+    FORBID_ATTR: ['disabled'],
   })
 }
 

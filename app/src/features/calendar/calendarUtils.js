@@ -17,6 +17,11 @@ export function displayDate(value) {
   return new Intl.DateTimeFormat('en', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(value))
 }
 
+export function monthKey(value) {
+  const date = new Date(value)
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+}
+
 export function monthYearLabel(value) {
   return new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' }).format(new Date(value))
 }

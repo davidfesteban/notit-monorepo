@@ -93,6 +93,32 @@ button:disabled {
   text-transform: uppercase;
 }
 
+.sync-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 9px;
+  border: 1px solid #171b24;
+  background: #ffffff;
+  color: #173b70;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.sync-pill.unsynced {
+  color: #8a1f1f;
+  background: #f4dddd;
+}
+
+.sync-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 14px;
+}
+
 input,
 textarea {
   border: 1px solid #171b24;
@@ -159,6 +185,14 @@ input {
   min-height: auto;
 }
 
+.setting-check select {
+  min-height: 32px;
+  border: 1px solid #171b24;
+  border-radius: 0;
+  background: #ffffff;
+  font: inherit;
+}
+
 .status-line {
   min-height: 36px;
   color: #173b70;
@@ -190,6 +224,7 @@ input {
 }
 
 .calendar-toolbar {
+  position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 8px;
@@ -205,6 +240,50 @@ input {
 .month-button {
   font-weight: 800;
   text-transform: uppercase;
+}
+
+.month-picker {
+  position: absolute;
+  z-index: 10;
+  top: 48px;
+  left: 148px;
+  width: 220px;
+  padding: 10px;
+  border: 2px solid #171b24;
+  background: #ffffff;
+  box-shadow: 4px 4px 0 #171b24;
+}
+
+.year-row {
+  display: grid;
+  grid-template-columns: 34px 1fr 34px;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.year-row select {
+  min-height: 34px;
+  border: 1px solid #171b24;
+  border-radius: 0;
+  background: #f5f7fb;
+  font: inherit;
+  font-weight: 800;
+  text-align: center;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.month-grid button {
+  min-height: 34px;
+}
+
+.month-grid button.active {
+  background: #173b70;
+  color: #ffffff;
 }
 
 .icon-button {

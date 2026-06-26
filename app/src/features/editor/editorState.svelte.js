@@ -12,11 +12,19 @@ export function createEditorState(notesState) {
     if (renderedHtml && mode === 'visual') renderMermaid()
   })
 
-  function insertMarkdown(before, after = '', placeholder = '') {
+  function insertMarkdown(before, after = '', placeholder = '', selection = null) {
     if (!notesState.selectedNote) return
     const body = notesState.selectedNote.body
     const insertion = `${before}${placeholder}${after}`
-    notesState.updateSelected({ body: body ? `${body}\n${insertion}` : insertion })
+
+    if (selection) {
+      const start = selection.start ?? body.length
+      const end = selection.end ?? start
+      notesState.updateSelected({ body: `${body.slice(0, start)}${insertion}${body.slice(end)}` })
+    } else {
+      notesState.updateSelected({ body: body ? `${body}\n${insertion}` : insertion })
+    }
+
     mode = 'markdown'
   }
 

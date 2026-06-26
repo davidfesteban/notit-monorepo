@@ -2,6 +2,7 @@ export function createLayoutState() {
   let split = $state(36)
   let aiOpen = $state(false)
   let repoOpen = $state(false)
+  let settingsOpen = $state(false)
 
   function beginResize(event) {
     const startX = event.clientX
@@ -27,6 +28,8 @@ export function createLayoutState() {
     set aiOpen(value) { aiOpen = value },
     get repoOpen() { return repoOpen },
     set repoOpen(value) { repoOpen = value },
+    get settingsOpen() { return settingsOpen },
+    set settingsOpen(value) { settingsOpen = value },
     beginResize,
   }
 }

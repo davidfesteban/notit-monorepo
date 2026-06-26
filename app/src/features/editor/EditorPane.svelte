@@ -13,6 +13,25 @@
   export let onCreate = () => {}
   export let onUpdateNote = () => {}
 
+  let textareaElement
+
+  function insert(before, after = '', placeholder = '') {
+    const selection =
+      editorMode === 'markdown' && textareaElement
+        ? { start: textareaElement.selectionStart, end: textareaElement.selectionEnd }
+        : null
+
+    onInsert(before, after, placeholder, selection)
+
+    if (!selection) return
+
+    requestAnimationFrame(() => {
+      const cursor = selection.start + before.length + placeholder.length
+      textareaElement?.focus()
+      textareaElement?.setSelectionRange(cursor, cursor)
+    })
+  }
+
   function checkboxIndex(target) {
     return [...target.closest('.markdown-preview').querySelectorAll('input[type="checkbox"]')].indexOf(target)
   }
@@ -53,13 +72,13 @@
     </div>
 
     <div class="tools">
-      <button type="button" onclick={() => onInsert('# ', '', 'Heading')} disabled={readOnly}>H1</button>
-      <button type="button" onclick={() => onInsert('## ', '', 'Heading')} disabled={readOnly}>H2</button>
-      <button type="button" onclick={() => onInsert('', '', 'Normal text')} disabled={readOnly}>Aa</button>
-      <button type="button" onclick={() => onInsert('- ', '', 'Bullet')} disabled={readOnly}>•</button>
-      <button type="button" onclick={() => onInsert('- [ ] ', '', 'Task')} disabled={readOnly}>☐</button>
-      <button type="button" onclick={() => onInsert('| A | B |\\n| --- | --- |\\n| 1 | 2 |')} disabled={readOnly}>Table</button>
-      <button type="button" onclick={() => onInsert('```mermaid\\n', '\\n```', 'graph TD;\\n  A-->B')} disabled={readOnly}>Diagram</button>
+      <button type="button" onclick={() => insert('# ', '', 'Heading')} disabled={readOnly}>H1</button>
+      <button type="button" onclick={() => insert('## ', '', 'Heading')} disabled={readOnly}>H2</button>
+      <button type="button" onclick={() => insert('', '', 'Normal text')} disabled={readOnly}>Aa</button>
+      <button type="button" onclick={() => insert('- ', '', 'Bullet')} disabled={readOnly}>•</button>
+      <button type="button" onclick={() => insert('- [ ] ', '', 'Task')} disabled={readOnly}>☐</button>
+      <button type="button" onclick={() => insert('| A | B |\n| --- | --- |\n| 1 | 2 |')} disabled={readOnly}>Table</button>
+      <button type="button" onclick={() => insert('```mermaid\n', '\n```', 'flowchart TD\n  A --> B')} disabled={readOnly}>Diagram</button>
     </div>
 
     <button class="save-button" type="button" onclick={onSave} disabled={loading || !selectedNote || readOnly}>Save</button>
@@ -73,6 +92,7 @@
 
     {#if editorMode === 'markdown'}
       <textarea
+        bind:this={textareaElement}
         class="markdown-editor"
         readonly={readOnly}
         value={selectedNote.body}

@@ -17,11 +17,13 @@ export function createNotesState() {
   let status = $state('')
   let error = $state('')
 
-  const selectedNote = $derived(selectedHistoryNote || notes.find((note) => note.path === selectedPath) || notes[0] || null)
+  const visibleNotes = $derived(notes.filter((note) => !note.pendingDelete))
+  const selectedNote = $derived(selectedHistoryNote || visibleNotes.find((note) => note.path === selectedPath) || visibleNotes[0] || null)
   const hasDirtyDrafts = $derived(notes.some((note) => note.dirty))
+  const hasPendingGithubChanges = $derived(notes.some((note) => note.pendingSync || note.pendingDelete))
 
   $effect(() => {
-    if (!selectedPath && notes.length) selectedPath = notes[0].path
+    if (!selectedPath && visibleNotes.length) selectedPath = visibleNotes[0].path
   })
 
   async function loadFromRepo(client, repo) {
@@ -42,8 +44,8 @@ export function createNotesState() {
         }),
       )
       notes = mergeDrafts(remoteNotes, drafts).sort(sortByUpdatedDate)
-      selectedPath = notes[0]?.path || ''
-      status = notes.length ? 'Notes loaded.' : 'Repo connected. Create your first note.'
+      selectedPath = visibleNotes[0]?.path || ''
+      status = visibleNotes.length ? 'Notes loaded.' : 'Repo connected. Create your first note.'
     } catch (err) {
       error = err.message
     } finally {
@@ -66,25 +68,29 @@ export function createNotesState() {
       commitSha: '',
       fileSha: '',
       dirty: true,
+      pendingSync: true,
     }
 
     notes = [note, ...notes]
     selectedPath = path
     persistDraft(note)
-    status = 'New local note. Save to push it to GitHub.'
+    status = 'New local note. GitHub will sync on the next autosave.'
   }
 
-  async function saveSelected(client, repo) {
+  async function saveSelected() {
     if (selectedHistoryNote) return
-    await saveNote(client, repo, selectedNote, 'manual')
+    markSavedLocally(selectedNote)
   }
 
-  async function saveDirty(client, repo, reason = 'autosave') {
+  async function syncPending(client, repo, reason = 'autosave') {
     if (!client || !repo.owner || !repo.name || loading) return
-    for (const note of notes.filter((note) => note.dirty)) await saveNote(client, repo, note, reason)
+    const pendingDeletes = notes.filter((note) => note.pendingDelete)
+    const pendingSaves = notes.filter((note) => note.pendingSync && !note.pendingDelete)
+    for (const note of pendingDeletes) await pushDelete(client, repo, note)
+    for (const note of pendingSaves) await pushNote(client, repo, note, reason)
   }
 
-  async function saveNote(client, repo, note, reason) {
+  async function pushNote(client, repo, note, reason) {
     if (!client || !repo.owner || !repo.name || !note) {
       error = 'Connect GitHub and choose a repo before saving.'
       return
@@ -109,6 +115,7 @@ export function createNotesState() {
         commitSha: result.commitSha,
         updatedDate: result.commitDate,
         dirty: false,
+        pendingSync: false,
       }
 
       commitMeta = { ...commitMeta, [path]: result.commitSha }
@@ -116,7 +123,7 @@ export function createNotesState() {
       await clearDraft(oldPath)
       notes = notes.map((item) => (item.path === oldPath ? savedNote : item)).sort(sortByUpdatedDate)
       selectedPath = path
-      status = reason === 'autosave' ? 'Autosaved to GitHub.' : 'Saved to GitHub.'
+      status = reason === 'autosave' ? 'Pushed pending changes to GitHub.' : 'Pushed to GitHub.'
     } catch (err) {
       error = err.message
     } finally {
@@ -124,15 +131,25 @@ export function createNotesState() {
     }
   }
 
-  async function deleteNote(client, repo, note) {
+  async function deleteNote(_client, _repo, note) {
     if (!note) return
     if (!note.commitSha) {
       await clearDraft(note.path)
       notes = notes.filter((item) => item.path !== note.path)
-      selectedPath = notes[0]?.path || ''
+      selectedPath = visibleNotes[0]?.path || ''
+      status = 'Deleted locally.'
       return
     }
 
+    const pendingDelete = { ...note, pendingDelete: true, pendingSync: false, dirty: false }
+    persistDraft(pendingDelete)
+    notes = notes.filter((item) => item.path !== note.path)
+    notes = [...notes, pendingDelete]
+    selectedPath = visibleNotes[0]?.path || ''
+    status = 'Deleted locally. GitHub will sync on the next autosave.'
+  }
+
+  async function pushDelete(client, repo, note) {
     loading = true
     clearMessage()
 
@@ -143,8 +160,8 @@ export function createNotesState() {
       })
       await clearDraft(note.path)
       notes = notes.filter((item) => item.path !== note.path)
-      selectedPath = notes[0]?.path || ''
-      status = 'Deleted from GitHub.'
+      selectedPath = visibleNotes[0]?.path || ''
+      status = 'Deleted from GitHub on autosave.'
     } catch (err) {
       error = err.message
     } finally {
@@ -166,12 +183,13 @@ export function createNotesState() {
       commitSha: '',
       updatedDate: new Date().toISOString(),
       dirty: true,
+      pendingSync: true,
     }
 
     notes = [copy, ...notes]
     selectedPath = path
     persistDraft(copy)
-    status = 'Duplicated locally. Save to push the new file.'
+    status = 'Duplicated locally. GitHub will sync on the next autosave.'
   }
 
   async function copyToClipboard(note) {
@@ -227,9 +245,17 @@ export function createNotesState() {
 
   function updateSelected(patch) {
     if (!selectedNote || selectedHistoryNote) return
-    const next = { ...selectedNote, ...patch, dirty: true }
+    const next = { ...selectedNote, ...patch, dirty: true, pendingSync: true }
     notes = notes.map((note) => (note.path === selectedNote.path ? next : note))
     persistDraft(next)
+  }
+
+  function markSavedLocally(note) {
+    if (!note) return
+    const next = { ...note, dirty: false, pendingSync: true }
+    notes = notes.map((item) => (item.path === note.path ? next : item))
+    persistDraft(next)
+    status = 'Saved locally. GitHub will sync on the next autosave.'
   }
 
   async function addBase64Image(file) {
@@ -240,7 +266,7 @@ export function createNotesState() {
     updateSelected({
       body: `${selectedNote.body || ''}\n![${name}](${dataUrl})`.trim(),
     })
-    status = 'Image embedded in markdown locally. Save to push it to GitHub.'
+    status = 'Image embedded in markdown locally. GitHub will sync on the next autosave.'
   }
 
   function reset() {
@@ -256,7 +282,7 @@ export function createNotesState() {
   }
 
   return {
-    get notes() { return notes },
+    get notes() { return visibleNotes },
     get selectedPath() { return selectedPath },
     set selectedPath(value) { selectedPath = value },
     get selectedNote() { return selectedNote },
@@ -264,13 +290,14 @@ export function createNotesState() {
     get historyVersions() { return historyVersions },
     get historyBaseNote() { return historyBaseNote },
     get hasDirtyDrafts() { return hasDirtyDrafts },
+    get hasPendingGithubChanges() { return hasPendingGithubChanges },
     get loading() { return loading },
     get status() { return status },
     get error() { return error },
     loadFromRepo,
     createNote,
     saveSelected,
-    saveDirty,
+    syncPending,
     deleteNote,
     copyNote,
     copyToClipboard,
@@ -285,21 +312,23 @@ export function createNotesState() {
 
 function mergeDrafts(remoteNotes, drafts) {
   const byPath = new Map(remoteNotes.map((note) => [note.path, note]))
-  for (const draft of drafts) byPath.set(draft.path, { ...(byPath.get(draft.path) || {}), ...draft, dirty: true })
+  for (const draft of drafts) byPath.set(draft.path, { ...(byPath.get(draft.path) || {}), ...draft })
   return [...byPath.values()]
 }
 
 function ensurePathMatchesTitle(note, existingNotes) {
   if (note.commitSha) return note.path
-  return uniquePath(notePathFor(note.title), existingNotes.filter((item) => item.path !== note.path))
+  return uniquePath(notePathFor(note.title), existingNotes.filter((item) => !item.pendingDelete && item.path !== note.path))
 }
 
 function sortByUpdatedDate(a, b) {
+  if (a.pendingDelete && !b.pendingDelete) return 1
+  if (!a.pendingDelete && b.pendingDelete) return -1
   return new Date(b.updatedDate) - new Date(a.updatedDate)
 }
 
 function persistDraft(note) {
-  saveDraft(note).catch(() => {})
+  return saveDraft(note).catch(() => {})
 }
 
 function fileToDataUrl(file) {
