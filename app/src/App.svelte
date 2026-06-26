@@ -1,93 +1,107 @@
 <script>
-  const notes = [
-    {
-      id: 1,
-      title: 'Project outline',
-      body: 'Shape the first Notit experience around fast capture, clean reading, and reliable sync later.',
-      updatedAt: 'Today',
-      tags: ['Product', 'Draft'],
-    },
-    {
-      id: 2,
-      title: 'Apple app polish',
-      body: 'Keep navigation native-feeling on iPhone, iPad, and macOS. Prioritize keyboard shortcuts after the editor settles.',
-      updatedAt: 'Yesterday',
-      tags: ['Apple'],
-    },
-    {
-      id: 3,
-      title: 'Backend later',
-      body: 'Start local-first. Add backend services only when accounts, sharing, or sync need a server.',
-      updatedAt: 'Jun 26',
-      tags: ['Architecture'],
-    },
-  ]
+  import { onMount } from 'svelte'
+  import { createApp } from './app/createApp.svelte.js'
+  import CalendarPane from './features/calendar/CalendarPane.svelte'
+  import EditorPane from './features/editor/EditorPane.svelte'
+  import RepoPanel from './features/repo/RepoPanel.svelte'
+  import TopBar from './features/topbar/TopBar.svelte'
 
-  let selectedNote = $state(notes[0])
+  const app = createApp()
+
+  onMount(() => {
+    app.initialize()
+    const stopAutosave = app.startAutosave()
+    window.addEventListener('beforeunload', app.protectUnload)
+    return () => {
+      stopAutosave()
+      window.removeEventListener('beforeunload', app.protectUnload)
+    }
+  })
 </script>
 
-<main class="shell">
-  <aside class="sidebar" aria-label="Notes">
-    <div class="brand">
-      <div class="brand-mark" aria-hidden="true">N</div>
-      <div>
-        <h1>Notit</h1>
-        <p>Notes</p>
-      </div>
-    </div>
+<main class="app-shell" style={`--left: ${app.layout.split}%`}>
+  <TopBar
+    search={app.calendar.search}
+    token={app.repo.token}
+    user={app.repo.user}
+    loading={app.loading}
+    onConnect={app.repo.connect}
+    onSearch={(value) => (app.calendar.search = value)}
+    onToggleRepo={() => (app.layout.repoOpen = !app.layout.repoOpen)}
+    onToggleAi={() => (app.layout.aiOpen = !app.layout.aiOpen)}
+  />
 
-    <button class="new-note" type="button">New note</button>
+  {#if app.repo.device}
+    <section class="notice">
+      <strong>{app.repo.device.user_code}</strong>
+      <span>Open <a href={app.repo.device.verification_uri} target="_blank" rel="noreferrer">{app.repo.device.verification_uri}</a> and enter the code.</span>
+    </section>
+  {/if}
 
-    <nav class="note-list" aria-label="Note list">
-      {#each notes as note}
-        <button
-          class:active={note.id === selectedNote.id}
-          type="button"
-          onclick={() => (selectedNote = note)}
-        >
-          <span>{note.title}</span>
-          <small>{note.updatedAt}</small>
-        </button>
-      {/each}
-    </nav>
-  </aside>
+  {#if app.layout.repoOpen}
+    <RepoPanel
+      repoOwner={app.repo.repoOwner}
+      repoName={app.repo.repoName}
+      loading={app.loading}
+      onRepoOwner={(value) => (app.repo.repoOwner = value)}
+      onRepoName={(value) => (app.repo.repoName = value)}
+      onUseExisting={() => app.useRepo(false)}
+      onCreateIfMissing={() => app.useRepo(true)}
+      onDisconnect={app.disconnect}
+    />
+  {/if}
 
-  <section class="editor" aria-label="Selected note">
-    <header class="editor-header">
-      <div>
-        <p class="eyebrow">Workspace</p>
-        <h2>{selectedNote.title}</h2>
-      </div>
-      <button type="button">Share</button>
-    </header>
+  {#if app.layout.aiOpen}
+    <section class="repo-panel">
+      <strong>AI Settings</strong>
+      <span>Placeholder for provider/model settings. No AI calls are wired in this version.</span>
+      <label class="setting-check">
+        <input type="checkbox" checked={app.autosaveEnabled} onchange={(event) => app.setAutosaveEnabled(event.currentTarget.checked)} />
+        <span>Autosave every 5 minutes</span>
+      </label>
+    </section>
+  {/if}
 
-    <div class="tags" aria-label="Tags">
-      {#each selectedNote.tags as tag}
-        <span>{tag}</span>
-      {/each}
-    </div>
+  {#if app.error || app.status}
+    <section class:error={app.error} class="status-line">{app.error || app.status}</section>
+  {/if}
 
-    <textarea bind:value={selectedNote.body} aria-label="Note body"></textarea>
+  <section class="workspace">
+    <CalendarPane
+      visualization={app.calendar.visualization}
+      monthLabel={app.calendar.monthLabel}
+      groups={app.calendar.groups}
+      notes={app.calendar.filteredNotes}
+      historyMode={app.notes.historyMode}
+      historyVersions={app.notes.historyVersions}
+      historyBaseNote={app.notes.historyBaseNote}
+      selectedPath={app.notes.selectedPath}
+      onToggleVisualization={app.calendar.toggleVisualization}
+      onSelect={(path) => (app.notes.selectedPath = path)}
+      onDuplicate={app.notes.copyNote}
+      onCopyToClipboard={app.notes.copyToClipboard}
+      onDelete={(note) => app.notes.deleteNote(app.repo.client, app.repo.repo, note)}
+      onHistory={(note) => app.notes.showHistory(app.repo.client, app.repo.repo, note)}
+      onSelectHistory={(version) => app.notes.selectHistoryVersion(app.repo.client, app.repo.repo, version)}
+      onExitHistory={app.notes.exitHistory}
+    />
+
+    <button class="splitter" type="button" aria-label="Resize columns" onpointerdown={app.layout.beginResize}></button>
+
+    <EditorPane
+      selectedNote={app.notes.selectedNote}
+      editorMode={app.editor.mode}
+      renderedHtml={app.editor.renderedHtml}
+      loading={app.loading}
+      readOnly={app.notes.historyMode && !!app.notes.selectedNote}
+      repo={app.repo.repo}
+      onMode={(mode) => (app.editor.mode = mode)}
+      onInsert={app.editor.insertMarkdown}
+      onToggleTask={app.editor.toggleTaskAt}
+      onPasteFiles={app.editor.pasteFiles}
+      onSave={() => app.notes.saveSelected(app.repo.client, app.repo.repo)}
+      onCreate={app.notes.createNote}
+      onUpdateNote={app.notes.updateSelected}
+    />
   </section>
-
-  <aside class="detail" aria-label="Note details">
-    <section>
-      <h2>Details</h2>
-      <dl>
-        <div>
-          <dt>Updated</dt>
-          <dd>{selectedNote.updatedAt}</dd>
-        </div>
-        <div>
-          <dt>Words</dt>
-          <dd>{selectedNote.body.trim().split(/\s+/).filter(Boolean).length}</dd>
-        </div>
-      </dl>
-    </section>
-
-    <section>
-      <h2>Next</h2>
-      <p>Local storage, search, and real note creation can be added once the product shape is clearer.</p>
-    </section>
-  </aside>
 </main>
