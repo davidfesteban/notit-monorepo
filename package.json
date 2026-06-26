@@ -1,0 +1,28 @@
+{
+  "name": "notit-monorepo",
+  "private": true,
+  "workspaces": [
+    "app"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w app",
+    "build": "npm run build -w app",
+    "check": "npm run check -w app",
+    "preview": "npm run preview -w app",
+    "mobile:sync": "npm run build && cap sync",
+    "ios": "npm run mobile:sync && cap open ios",
+    "android": "npm run mobile:sync && cap open android",
+    "desktop": "cd platforms/desktop && ../../node_modules/.bin/tauri dev",
+    "desktop:build": "cd platforms/desktop && ../../node_modules/.bin/tauri build"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.4.1",
+    "@tauri-apps/api": "^2.11.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/ios": "^8.4.1",
+    "@tauri-apps/cli": "^2.11.3"
+  }
+}

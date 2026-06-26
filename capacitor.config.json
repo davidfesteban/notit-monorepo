@@ -1,0 +1,11 @@
+{
+  "appId": "com.davidfesteban.notit",
+  "appName": "Notit",
+  "webDir": "app/dist",
+  "ios": {
+    "path": "platforms/ios"
+  },
+  "android": {
+    "path": "platforms/android"
+  }
+}
