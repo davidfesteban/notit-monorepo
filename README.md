@@ -36,3 +36,24 @@ Create a GitHub OAuth/GitHub App with Device Flow enabled, then run the app with
 ```sh
 VITE_GITHUB_CLIENT_ID=your_client_id npm run dev
 ```
+# Web build only
+  npm run build
+
+  # Desktop app build (Tauri)
+  npm run desktop:build
+
+  # iOS / Android: build web app + sync Capacitor native projects
+  npm run mobile:sync
+
+  Then open native IDEs:
+
+  # iOS in Xcode
+  npm run ios
+
+  # Android in Android Studio
+  npm run android
+
+  For development:
+
+  npm run dev
+  npm run desktop
