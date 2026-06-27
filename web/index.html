@@ -45,6 +45,10 @@
         <link rel="apple-touch-icon" href="./notit_logo.png" />
         <link rel="stylesheet" href="./styles.css" />
         <script defer src="https://analytics.misei.dev/script.js"></script>
+        <script>
+            if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+            window.addEventListener("pageshow", () => window.scrollTo(0, 0));
+        </script>
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
@@ -138,7 +142,7 @@
                     >
                 </div>
                 <div class="app-frame">
-                    <iframe title="Notit app preview" src="./app/?demo=1"></iframe>
+                    <iframe title="Notit app preview" src="./app/?demo=1" loading="lazy" tabindex="-1"></iframe>
                 </div>
             </section>
 
