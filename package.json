@@ -2,7 +2,8 @@
   "name": "notit-monorepo",
   "private": true,
   "workspaces": [
-    "app"
+    "app",
+    "packages/*"
   ],
   "scripts": {
     "dev": "npm run dev -w app",
@@ -11,6 +12,7 @@
     "preview": "npm run preview -w app",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "mcp:notit": "node packages/notit-mcp/server.js",
     "mobile:sync": "npm run build && cap sync",
     "ios": "npm run mobile:sync && cap open ios",
     "android": "npm run mobile:sync && cap open android",

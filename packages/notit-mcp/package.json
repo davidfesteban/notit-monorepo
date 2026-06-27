@@ -1,0 +1,9 @@
+{
+  "name": "@notit/mcp",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "notit-mcp": "server.js"
+  }
+}

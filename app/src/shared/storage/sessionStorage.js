@@ -15,6 +15,7 @@ export function loadSession() {
       showCodeLineNumbers: true,
       strikeCompletedTasks: true,
       showMarkdownLineNumbers: true,
+      theme: 'retro',
     }),
   }
 }

@@ -18,6 +18,7 @@ export function createApp() {
   let showCodeLineNumbers = $state(session.settings?.showCodeLineNumbers !== false)
   let strikeCompletedTasks = $state(session.settings?.strikeCompletedTasks !== false)
   let showMarkdownLineNumbers = $state(session.settings?.showMarkdownLineNumbers !== false)
+  let theme = $state(normalizeTheme(session.settings?.theme))
   let syncRemainingSeconds = $state((session.settings?.autosaveMinutes || 5) * 60)
   let autosaveTimer = null
   let syncing = false
@@ -76,6 +77,11 @@ export function createApp() {
     persistSettings()
   }
 
+  function setTheme(value) {
+    theme = normalizeTheme(value)
+    persistSettings()
+  }
+
   function persistSettings() {
     saveSettings({
       autosaveEnabled,
@@ -84,6 +90,7 @@ export function createApp() {
       showCodeLineNumbers,
       strikeCompletedTasks,
       showMarkdownLineNumbers,
+      theme,
     })
   }
 
@@ -189,6 +196,7 @@ export function createApp() {
     get showCodeLineNumbers() { return showCodeLineNumbers },
     get strikeCompletedTasks() { return strikeCompletedTasks },
     get showMarkdownLineNumbers() { return showMarkdownLineNumbers },
+    get theme() { return theme },
     get syncStatus() { return notes.hasPendingGithubChanges ? 'Unsync' : 'Synced' },
     get syncCountdown() { return formatSyncCountdown() },
     setAutosaveEnabled,
@@ -197,6 +205,7 @@ export function createApp() {
     setShowCodeLineNumbers,
     setStrikeCompletedTasks,
     setShowMarkdownLineNumbers,
+    setTheme,
     forceSync,
     selectMonth,
     copyDeviceCode,
@@ -212,4 +221,8 @@ export function createApp() {
     useRepo,
     disconnect,
   }
+}
+
+function normalizeTheme(value) {
+  return ['retro', 'notit-dark', 'zed-slim'].includes(value) ? value : 'retro'
 }

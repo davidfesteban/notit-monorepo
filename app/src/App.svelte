@@ -22,7 +22,7 @@
   })
 </script>
 
-<main class:left-collapsed={app.layout.leftCollapsed} class="app-shell" style={`--left: ${app.layout.split}%`}>
+<main class:left-collapsed={app.layout.leftCollapsed} class={`app-shell theme-${app.theme}`} style={`--left: ${app.layout.split}%`}>
   <TopBar
     search={app.calendar.search}
     token={app.repo.token}
@@ -96,6 +96,14 @@
       <label class="setting-row">
         <input type="checkbox" checked={app.showMarkdownLineNumbers} onchange={(event) => app.setShowMarkdownLineNumbers(event.currentTarget.checked)} />
         <span>Markdown line numbers</span>
+      </label>
+      <label class="setting-row">
+        <span>Theme</span>
+        <select onchange={(event) => app.setTheme(event.currentTarget.value)}>
+          <option value="retro" selected={app.theme === 'retro'}>90s Notit</option>
+          <option value="notit-dark" selected={app.theme === 'notit-dark'}>Notit Dark</option>
+          <option value="zed-slim" selected={app.theme === 'zed-slim'}>Zed Slim</option>
+        </select>
       </label>
     </section>
   {/if}

@@ -103,6 +103,7 @@ export function createRepoState() {
       }
 
       await client.ensureMasterBranch(selectedRepo.owner.login, selectedRepo.name, selectedRepo.default_branch)
+      await client.ensureAgentsGuide(selectedRepo.owner.login, selectedRepo.name)
       repo = { owner: selectedRepo.owner.login, name: selectedRepo.name }
       repoOwner = repo.owner
       repoName = repo.name

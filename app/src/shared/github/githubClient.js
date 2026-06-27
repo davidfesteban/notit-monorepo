@@ -48,6 +48,20 @@ export class GitHubClient {
     })
   }
 
+  async ensureAgentsGuide(owner, repo) {
+    try {
+      await this.request(`/repos/${owner}/${repo}/contents/AGENTS.md?ref=master`)
+      return
+    } catch (error) {
+      if (!String(error.message).includes('Not Found')) throw error
+    }
+
+    await this.commitFiles(owner, repo, {
+      message: 'Add Notit agent guide',
+      additions: [{ path: 'AGENTS.md', contentBase64: encodeBase64(defaultAgentsGuide()) }],
+    })
+  }
+
   async listNotes(owner, repo) {
     const tree = await this.request(`/repos/${owner}/${repo}/git/trees/master?recursive=1`)
     const files = (tree.tree || []).filter((item) => item.type === 'blob' && item.path.startsWith('notes/') && item.path.endsWith('.md'))
@@ -256,6 +270,32 @@ function decodeBase64(value) {
   const binary = atob(String(value).replace(/\s/g, ''))
   const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0))
   return new TextDecoder().decode(bytes)
+}
+
+function encodeBase64(value) {
+  const bytes = new TextEncoder().encode(value)
+  let binary = ''
+  for (const byte of bytes) binary += String.fromCharCode(byte)
+  return btoa(binary)
+}
+
+function defaultAgentsGuide() {
+  return `# Notit Notes
+
+This repository contains Notit notes.
+
+## Rules for AI agents
+
+- Notes live in \`notes/*.md\`.
+- Treat each Markdown file as one note.
+- Preserve frontmatter and Markdown formatting.
+- Do not rewrite unrelated notes.
+- Prefer small focused edits.
+- Use Git history as the source of truth for previous versions.
+- Mermaid blocks are diagrams.
+- \`notit-table\` blocks are editable CSV-like tables.
+- Keep commits focused and human-readable.
+`
 }
 
 function isBranchHeadConflict(error) {

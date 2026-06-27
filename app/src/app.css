@@ -839,3 +839,203 @@ input {
 .editor-footer span:last-child {
   margin-left: auto;
 }
+
+.app-shell.theme-notit-dark {
+  color: #f4f4f4;
+  background: #050505;
+}
+
+.theme-notit-dark .topbar,
+.theme-notit-dark .editor-toolbar,
+.theme-notit-dark .calendar-toolbar,
+.theme-notit-dark .editor-footer,
+.theme-notit-dark .repo-panel,
+.theme-notit-dark .notice,
+.theme-notit-dark .status-line {
+  border-color: #f4f4f4;
+  background: #080808;
+  color: #f4f4f4;
+}
+
+.theme-notit-dark .calendar-pane,
+.theme-notit-dark .editor-pane {
+  border-color: #f4f4f4;
+  background: #050505;
+}
+
+.theme-notit-dark .calendar-list,
+.theme-notit-dark .title-row,
+.theme-notit-dark .preview-frame,
+.theme-notit-dark .markdown-editor-frame,
+.theme-notit-dark .markdown-editor,
+.theme-notit-dark .markdown-preview {
+  background: #050505;
+  color: #f4f4f4;
+}
+
+.theme-notit-dark .top-action,
+.theme-notit-dark .repo-panel button,
+.theme-notit-dark .calendar-toolbar button,
+.theme-notit-dark .editor-toolbar button,
+.theme-notit-dark .editor-footer button,
+.theme-notit-dark .row-actions button,
+.theme-notit-dark .tool-menu summary {
+  border-color: #f4f4f4;
+  color: #f4f4f4;
+  background: #050505;
+  box-shadow: 3px 3px 0 #2d5cff;
+}
+
+.theme-notit-dark .mode-switch button.active,
+.theme-notit-dark .focus-toggle.active,
+.theme-notit-dark .save-button {
+  color: #050505 !important;
+  background: #ffffff !important;
+}
+
+.theme-notit-dark input,
+.theme-notit-dark textarea,
+.theme-notit-dark select,
+.theme-notit-dark .sync-pill,
+.theme-notit-dark .empty-state,
+.theme-notit-dark .tool-menu-items,
+.theme-notit-dark .month-picker,
+.theme-notit-dark .markdown-preview pre,
+.theme-notit-dark .markdown-preview table,
+.theme-notit-dark .markdown-preview details.notit-code {
+  border-color: #f4f4f4;
+  color: #f4f4f4;
+  background: #111111;
+}
+
+.theme-notit-dark .markdown-preview h1,
+.theme-notit-dark .markdown-preview h2,
+.theme-notit-dark .notice a,
+.theme-notit-dark .sync-pill,
+.theme-notit-dark .date-group article.active {
+  color: #ffffff;
+}
+
+.theme-notit-dark .date-group article.active {
+  border-color: #ffffff;
+  background: #111111;
+}
+
+.theme-notit-dark .note-select span,
+.theme-notit-dark .repo-panel span,
+.theme-notit-dark .search,
+.theme-notit-dark .editor-footer,
+.theme-notit-dark .setting-row,
+.theme-notit-dark .eyebrow {
+  color: #cfcfcf;
+}
+
+.app-shell.theme-zed-slim {
+  color: #d7dbe5;
+  background: #101114;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.theme-zed-slim .topbar,
+.theme-zed-slim .editor-toolbar,
+.theme-zed-slim .calendar-toolbar,
+.theme-zed-slim .editor-footer,
+.theme-zed-slim .repo-panel,
+.theme-zed-slim .notice,
+.theme-zed-slim .status-line {
+  min-height: 38px;
+  padding: 6px 8px;
+  border-color: #2a2d35;
+  background: #17191f;
+  color: #d7dbe5;
+}
+
+.theme-zed-slim .calendar-pane,
+.theme-zed-slim .editor-pane,
+.theme-zed-slim .calendar-list,
+.theme-zed-slim .title-row,
+.theme-zed-slim .preview-frame,
+.theme-zed-slim .markdown-editor-frame,
+.theme-zed-slim .markdown-editor,
+.theme-zed-slim .markdown-preview {
+  border-color: #2a2d35;
+  background: #101114;
+  color: #d7dbe5;
+}
+
+.theme-zed-slim .top-action,
+.theme-zed-slim .repo-panel button,
+.theme-zed-slim .calendar-toolbar button,
+.theme-zed-slim .editor-toolbar button,
+.theme-zed-slim .editor-footer button,
+.theme-zed-slim .row-actions button,
+.theme-zed-slim .tool-menu summary {
+  min-height: 26px;
+  border-color: #303440;
+  border-radius: 3px;
+  color: #d7dbe5;
+  background: #1d2028;
+  box-shadow: none;
+  font-size: 12px;
+}
+
+.theme-zed-slim .mode-switch button.active,
+.theme-zed-slim .focus-toggle.active,
+.theme-zed-slim .save-button {
+  color: #ffffff !important;
+  background: #3451b2 !important;
+}
+
+.theme-zed-slim input,
+.theme-zed-slim textarea,
+.theme-zed-slim select,
+.theme-zed-slim .sync-pill,
+.theme-zed-slim .empty-state,
+.theme-zed-slim .tool-menu-items,
+.theme-zed-slim .month-picker,
+.theme-zed-slim .markdown-preview pre,
+.theme-zed-slim .markdown-preview table,
+.theme-zed-slim .markdown-preview details.notit-code {
+  border-color: #303440;
+  border-radius: 3px;
+  color: #d7dbe5;
+  background: #15171d;
+}
+
+.theme-zed-slim .markdown-preview {
+  max-width: 980px;
+  padding: 18px 24px 64px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.theme-zed-slim .markdown-preview h1 {
+  border-color: #303440;
+  font-size: 28px;
+}
+
+.theme-zed-slim .markdown-preview h2 {
+  color: #8aa2ff;
+  font-size: 20px;
+}
+
+.theme-zed-slim .title-row {
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px;
+}
+
+.theme-zed-slim .title-row input:first-child {
+  font-size: 16px;
+}
+
+.theme-zed-slim .calendar-list,
+.theme-zed-slim .date-group article,
+.theme-zed-slim .note-select span,
+.theme-zed-slim .editor-footer,
+.theme-zed-slim .setting-row,
+.theme-zed-slim .search {
+  color: #a9afbd;
+  font-size: 12px;
+}

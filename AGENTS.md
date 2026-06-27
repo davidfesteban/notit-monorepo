@@ -9,6 +9,7 @@ Notit is a Svelte note app that stores notes as Markdown files in GitHub. There 
 - `app/` contains the real product code.
 - `platforms/ios/` and `platforms/android/` are Capacitor shells.
 - `platforms/desktop/` is the Tauri shell.
+- `packages/notit-mcp/` is the local STDIO MCP server for Codex.
 - `.github/workflows/pages.yml` publishes the web build to GitHub Pages.
 
 ## Commands
@@ -19,6 +20,7 @@ npm run dev
 npm run build
 npm run check
 npm run test:e2e
+npm run mcp:notit
 ```
 
 Desktop:
@@ -57,4 +59,21 @@ Do not commit `app/.env`; keep `app/.env.example` as the tracked template.
 - Keep product logic in focused feature folders under `app/src/features`.
 - Do not add a backend unless the user explicitly asks for one.
 - Keep wrapper/platform build config inside `platforms/`.
+- Keep local MCP work in `packages/notit-mcp`; it should run without a hosted backend.
 - Validate layout changes with Playwright when practical.
+
+## Local MCP
+
+Start the Notit MCP server with:
+
+```sh
+NOTIT_REPO_DIR=/absolute/path/to/your/notit-notes-repo npm run mcp:notit
+```
+
+Add it to Codex with:
+
+```sh
+codex mcp add notit \
+  --env NOTIT_REPO_DIR=/absolute/path/to/your/notit-notes-repo \
+  -- node /absolute/path/to/notit-monorepo/packages/notit-mcp/server.js
+```
