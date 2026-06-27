@@ -38,6 +38,34 @@ test('uses two-screen notes and editor flow on phone width', async ({ page }) =>
   await expect(page.locator('.calendar-pane')).toHaveCount(0)
 })
 
+test('exposes app settings from the phone menu', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  await page.locator('.mobile-menu summary').click()
+  await expect(page.getByRole('button', { name: 'GitHub', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Repository', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'AI', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Setting', exact: true })).toBeVisible()
+
+  await page.getByRole('button', { name: 'Setting', exact: true }).click()
+  await expect(page.getByText('Theme')).toBeVisible()
+})
+
+test('demo mode seeds notes and animates until interaction', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/?demo=1')
+
+  await expect(page.locator('.title-row input').first()).toHaveValue('Notit demo')
+  await expect(page.locator('.app-shell')).toHaveClass(/theme-retro/)
+  await expect(page.locator('.app-shell')).toHaveClass(/theme-notit-dark/, { timeout: 3500 })
+
+  await page.getByRole('button', { name: 'Notes', exact: true }).click()
+  const classAfterClick = await page.locator('.app-shell').getAttribute('class')
+  await page.waitForTimeout(2600)
+  await expect(page.locator('.app-shell')).toHaveClass(classAfterClick)
+})
+
 test('focus toggle hides and restores the note list on desktop width', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 760 })
   await page.goto('/')

@@ -3,7 +3,7 @@ import { clearAllDrafts, clearDraft, loadDrafts, saveDraft } from '../../shared/
 import { loadSession, saveCommitMeta } from '../../shared/storage/sessionStorage.js'
 import { uniquePath } from '../calendar/calendarUtils.js'
 
-export function createNotesState() {
+export function createNotesState({ demo = false } = {}) {
   const session = loadSession()
 
   let notes = $state([])
@@ -29,6 +29,7 @@ export function createNotesState() {
   })
 
   async function loadFromRepo(client, repo) {
+    if (demo) return
     if (!client || !repo.owner || !repo.name) return
 
     loading = true
@@ -69,14 +70,14 @@ export function createNotesState() {
       updatedDate: createdDate,
       commitSha: '',
       fileSha: '',
-      dirty: true,
+      dirty: !demo,
       pendingSync: false,
     }
 
     notes = [note, ...notes]
     selectedPath = path
-    persistDraft(note)
-    status = 'New local draft. Save it when it is ready to sync.'
+    persistLocalDraft(note)
+    status = demo ? 'Demo note created.' : 'New local draft. Save it when it is ready to sync.'
   }
 
   async function saveSelected() {
@@ -128,7 +129,7 @@ export function createNotesState() {
 
       commitMeta = { ...commitMeta, [path]: result.commitSha }
       saveCommitMeta(commitMeta)
-      await clearDraft(oldPath)
+      await clearLocalDraft(oldPath)
       notes = notes.map((item) => (item.path === oldPath ? savedNote : item)).sort(sortByUpdatedDate)
       selectedPath = path
       status = reason === 'autosave' ? 'Pushed pending changes to GitHub.' : 'Pushed to GitHub.'
@@ -142,7 +143,7 @@ export function createNotesState() {
   async function deleteNote(_client, _repo, note) {
     if (!note) return
     if (!note.commitSha) {
-      await clearDraft(note.path)
+      await clearLocalDraft(note.path)
       notes = notes.filter((item) => item.path !== note.path)
       selectedPath = visibleNotes[0]?.path || ''
       status = 'Deleted locally.'
@@ -150,7 +151,7 @@ export function createNotesState() {
     }
 
     const pendingDelete = { ...note, pendingDelete: true, pendingSync: false, dirty: false }
-    persistDraft(pendingDelete)
+    persistLocalDraft(pendingDelete)
     notes = notes.filter((item) => item.path !== note.path)
     notes = [...notes, pendingDelete]
     selectedPath = visibleNotes[0]?.path || ''
@@ -166,7 +167,7 @@ export function createNotesState() {
         message: `Delete ${note.path}`,
         deletions: [note.path],
       })
-      await clearDraft(note.path)
+      await clearLocalDraft(note.path)
       notes = notes.filter((item) => item.path !== note.path)
       selectedPath = visibleNotes[0]?.path || ''
       status = 'Deleted from GitHub on autosave.'
@@ -196,7 +197,7 @@ export function createNotesState() {
 
     notes = [copy, ...notes]
     selectedPath = path
-    persistDraft(copy)
+    persistLocalDraft(copy)
     status = 'Duplicated locally. GitHub will sync on the next autosave.'
   }
 
@@ -278,7 +279,7 @@ export function createNotesState() {
       }
 
       notes = notes.map((note) => (note.path === oldNote.path ? next : note)).sort(sortByUpdatedDate)
-      persistDraft(next)
+      persistLocalDraft(next)
       selectedPath = next.path
       exitHistory()
       status = `Restored ${version.commitSha.slice(0, 7)} locally. GitHub will sync on the next autosave.`
@@ -291,16 +292,16 @@ export function createNotesState() {
 
   function updateSelected(patch) {
     if (!selectedNote || selectedHistoryNote) return
-    const next = { ...selectedNote, ...patch, dirty: true }
+    const next = { ...selectedNote, ...patch, dirty: !demo }
     notes = notes.map((note) => (note.path === selectedNote.path ? next : note))
-    persistDraft(next)
+    persistLocalDraft(next)
   }
 
   function markSavedLocally(note) {
     if (!note) return
     const next = { ...note, dirty: false, pendingSync: true, updatedDate: new Date().toISOString() }
     notes = notes.map((item) => (item.path === note.path ? next : item)).sort(sortByUpdatedDate)
-    persistDraft(next)
+    persistLocalDraft(next)
     status = 'Saved locally. GitHub will sync on the next autosave.'
   }
 
@@ -319,12 +320,32 @@ export function createNotesState() {
     notes = []
     selectedPath = ''
     exitHistory()
-    clearAllDrafts()
+    if (!demo) clearAllDrafts()
+  }
+
+  function seedDemoNotes() {
+    const now = new Date()
+    const yesterday = new Date(now)
+    yesterday.setDate(now.getDate() - 1)
+    notes = [
+      demoNote('notes/notit-demo.md', 'Notit demo', 'Private GitHub notes', now.toISOString(), '# Notit demo\n\n- [ ] Write notes\n- [x] Keep history\n\n```mermaid\nflowchart LR\n  Idea --> Markdown\n  Markdown --> GitHub\n  GitHub --> ChatGPT\n```'),
+      demoNote('notes/launch-checklist.md', 'Launch checklist', 'No backend. No subscription.', yesterday.toISOString(), '# Launch checklist\n\n| Area | Status |\n| --- | --- |\n| Desktop | Ready |\n| Web | Ready |\n| Mobile | Next |\n'),
+    ]
+    selectedPath = notes[0].path
+    status = 'Demo mode. Click or type to pause animation.'
   }
 
   function clearMessage() {
     error = ''
     status = ''
+  }
+
+  function persistLocalDraft(note) {
+    if (!demo) persistDraft(note)
+  }
+
+  async function clearLocalDraft(path) {
+    if (!demo) await clearDraft(path)
   }
 
   return {
@@ -354,7 +375,24 @@ export function createNotesState() {
     exitHistory,
     updateSelected,
     addBase64Image,
+    seedDemoNotes,
     reset,
+  }
+}
+
+function demoNote(path, title, description, updatedDate, body) {
+  return {
+    id: path,
+    path,
+    title,
+    description,
+    body,
+    createdDate: updatedDate,
+    updatedDate,
+    commitSha: 'demo000',
+    fileSha: '',
+    dirty: false,
+    pendingSync: false,
   }
 }
 

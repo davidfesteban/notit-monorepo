@@ -7,18 +7,31 @@
   import RepoPanel from './features/repo/RepoPanel.svelte'
   import TopBar from './features/topbar/TopBar.svelte'
 
-  const app = createApp()
+  const app = createApp({ demo: new URLSearchParams(window.location.search).get('demo') === '1' })
 
   onMount(() => {
     app.initialize()
     app.syncLayoutToViewport()
     const stopAutosave = app.startAutosave()
+    const stopDemo = app.startDemo()
+    const stopDemoOnInput = () => app.stopDemo()
     window.addEventListener('resize', app.syncLayoutToViewport)
     window.addEventListener('beforeunload', app.protectUnload)
+    if (app.demoMode) {
+      window.addEventListener('pointerdown', stopDemoOnInput, { capture: true })
+      window.addEventListener('keydown', stopDemoOnInput, { capture: true })
+      window.addEventListener('wheel', stopDemoOnInput, { capture: true })
+      window.addEventListener('focusin', stopDemoOnInput, { capture: true })
+    }
     return () => {
       stopAutosave()
+      stopDemo()
       window.removeEventListener('resize', app.syncLayoutToViewport)
       window.removeEventListener('beforeunload', app.protectUnload)
+      window.removeEventListener('pointerdown', stopDemoOnInput, { capture: true })
+      window.removeEventListener('keydown', stopDemoOnInput, { capture: true })
+      window.removeEventListener('wheel', stopDemoOnInput, { capture: true })
+      window.removeEventListener('focusin', stopDemoOnInput, { capture: true })
     }
   })
 </script>

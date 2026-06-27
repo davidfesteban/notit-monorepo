@@ -5,10 +5,10 @@ import { createNotesState } from '../features/notes/notesState.svelte.js'
 import { createRepoState } from '../features/repo/repoState.svelte.js'
 import { loadSession, saveSettings } from '../shared/storage/sessionStorage.js'
 
-export function createApp() {
+export function createApp({ demo = false } = {}) {
   const session = loadSession()
   const repo = createRepoState()
-  const notes = createNotesState()
+  const notes = createNotesState({ demo })
   const calendar = createCalendarState(notes)
   const editor = createEditorState(notes)
   const layout = createLayoutState()
@@ -21,6 +21,8 @@ export function createApp() {
   let theme = $state(normalizeTheme(session.settings?.theme))
   let syncRemainingSeconds = $state((session.settings?.autosaveMinutes || 5) * 60)
   let autosaveTimer = null
+  let demoTimer = null
+  let demoStep = 0
   let syncing = false
 
   const loading = $derived(repo.loading || notes.loading)
@@ -28,6 +30,11 @@ export function createApp() {
   const error = $derived(editor.error || notes.error || repo.error)
 
   async function initialize() {
+    if (demo) {
+      notes.seedDemoNotes()
+      return
+    }
+
     await repo.loadViewer()
     await notes.loadFromRepo(repo.client, repo.repo)
   }
@@ -83,6 +90,7 @@ export function createApp() {
   }
 
   function persistSettings() {
+    if (demo) return
     saveSettings({
       autosaveEnabled,
       autosaveMinutes,
@@ -95,6 +103,7 @@ export function createApp() {
   }
 
   function startAutosave() {
+    if (demo) return () => {}
     stopAutosave()
     syncRemainingSeconds = autosaveMinutes * 60
     autosaveTimer = setInterval(tickAutosave, 1000)
@@ -102,6 +111,7 @@ export function createApp() {
   }
 
   async function forceSync() {
+    if (demo) return
     if (syncing) return
     syncing = true
     syncRemainingSeconds = autosaveMinutes * 60
@@ -137,6 +147,7 @@ export function createApp() {
   }
 
   function protectUnload(event) {
+    if (demo) return
     if (!notes.hasPendingGithubChanges) return
     event.preventDefault()
     event.returnValue = ''
@@ -197,6 +208,36 @@ export function createApp() {
     }
   }
 
+  function startDemo() {
+    if (!demo || demoTimer) return stopDemo
+    demoTimer = setInterval(runDemoStep, 2200)
+    return stopDemo
+  }
+
+  function stopDemo() {
+    if (!demoTimer) return
+    clearInterval(demoTimer)
+    demoTimer = null
+  }
+
+  function runDemoStep() {
+    const steps = [
+      () => setTheme('notit-dark'),
+      () => layout.setLeftCollapsed(false),
+      () => selectNote('notes/launch-checklist.md'),
+      () => { editor.mode = 'markdown' },
+      () => editor.insertMarkdown('- [ ] Capture idea', '', ''),
+      () => createNote(),
+      () => { editor.mode = 'visual' },
+      () => layout.setLeftCollapsed(true, true),
+      () => setTheme('zed-slim'),
+      () => setTheme('retro'),
+    ]
+
+    steps[demoStep % steps.length]()
+    demoStep += 1
+  }
+
   function formatSyncCountdown() {
     if (!autosaveEnabled) return 'paused'
     const minutes = Math.floor(syncRemainingSeconds / 60)
@@ -210,6 +251,7 @@ export function createApp() {
     calendar,
     editor,
     layout,
+    demoMode: demo,
     get autosaveEnabled() { return autosaveEnabled },
     get autosaveMinutes() { return autosaveMinutes },
     get showSyncCountdown() { return showSyncCountdown },
@@ -239,6 +281,8 @@ export function createApp() {
     get error() { return error },
     initialize,
     startAutosave,
+    startDemo,
+    stopDemo,
     stopAutosave,
     protectUnload,
     useRepo,

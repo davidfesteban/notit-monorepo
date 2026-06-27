@@ -16,6 +16,13 @@
   export let onToggleRepo = () => {}
   export let onToggleAi = () => {}
   export let onToggleSettings = () => {}
+
+  let menuOpen = false
+
+  function runMenuAction(action) {
+    menuOpen = false
+    action()
+  }
 </script>
 
 <header class:left-collapsed={leftCollapsed} class="topbar">
@@ -39,6 +46,20 @@
         {leftCollapsed ? 'Unfocus' : 'Focus'}
       {/if}
     </button>
+
+    {#if isMobile}
+      <details class="mobile-menu" bind:open={menuOpen}>
+        <summary>Menu</summary>
+        <div class="mobile-menu-items">
+          <button type="button" onclick={() => runMenuAction(onConnect)} disabled={loading || token}>
+            {token ? `GitHub${user ? `: ${user.login}` : ''}` : 'GitHub'}
+          </button>
+          <button type="button" onclick={() => runMenuAction(onToggleRepo)} disabled={!token}>Repository</button>
+          <button type="button" onclick={() => runMenuAction(onToggleAi)}>AI</button>
+          <button type="button" onclick={() => runMenuAction(onToggleSettings)}>Setting</button>
+        </div>
+      </details>
+    {/if}
 
     <div class="topbar-right">
       <label class="search">

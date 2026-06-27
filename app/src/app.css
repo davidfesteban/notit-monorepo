@@ -115,6 +115,39 @@ button:disabled {
   margin-left: auto;
 }
 
+.mobile-menu {
+  display: none;
+  position: relative;
+}
+
+.mobile-menu summary {
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid #171b24;
+  background: #eef1f6;
+  box-shadow: 2px 2px 0 #171b24;
+  list-style: none;
+  cursor: pointer;
+}
+
+.mobile-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-menu-items {
+  position: absolute;
+  z-index: 30;
+  top: 40px;
+  left: 0;
+  display: grid;
+  min-width: 150px;
+  gap: 6px;
+  padding: 8px;
+  border: 2px solid #171b24;
+  background: #ffffff;
+  box-shadow: 4px 4px 0 #171b24;
+}
+
 .top-action,
 .repo-panel button,
 .calendar-toolbar button,
@@ -715,6 +748,10 @@ input {
     grid-column: 1;
   }
 
+  .mobile-menu {
+    display: block;
+  }
+
   .search span {
     display: none;
   }
@@ -1140,7 +1177,9 @@ input {
 .theme-notit-dark .editor-toolbar button,
 .theme-notit-dark .editor-footer button,
 .theme-notit-dark .row-actions button,
-.theme-notit-dark .tool-menu summary {
+.theme-notit-dark .tool-menu summary,
+.theme-notit-dark .mobile-menu summary,
+.theme-notit-dark .mobile-menu button {
   border-color: #f4f4f4;
   color: #f4f4f4;
   background: #050505;
@@ -1160,6 +1199,7 @@ input {
 .theme-notit-dark .sync-pill,
 .theme-notit-dark .empty-state,
 .theme-notit-dark .tool-menu-items,
+.theme-notit-dark .mobile-menu-items,
 .theme-notit-dark .month-picker,
 .theme-notit-dark .markdown-preview pre,
 .theme-notit-dark .markdown-preview table,
@@ -1230,7 +1270,9 @@ input {
 .theme-zed-slim .editor-toolbar button,
 .theme-zed-slim .editor-footer button,
 .theme-zed-slim .row-actions button,
-.theme-zed-slim .tool-menu summary {
+.theme-zed-slim .tool-menu summary,
+.theme-zed-slim .mobile-menu summary,
+.theme-zed-slim .mobile-menu button {
   min-height: 26px;
   border-color: #303440;
   border-radius: 3px;
@@ -1253,6 +1295,7 @@ input {
 .theme-zed-slim .sync-pill,
 .theme-zed-slim .empty-state,
 .theme-zed-slim .tool-menu-items,
+.theme-zed-slim .mobile-menu-items,
 .theme-zed-slim .month-picker,
 .theme-zed-slim .markdown-preview pre,
 .theme-zed-slim .markdown-preview table,
