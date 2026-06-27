@@ -1,6 +1,6 @@
 # Notit App
 
-Svelte + Vite app shared by web, Capacitor mobile targets, and Tauri desktop.
+Svelte + Vite app shared by web and Capacitor mobile targets.
 Platform shells live in `../platforms`.
 
 ```sh

@@ -169,7 +169,7 @@ export function createApp({ demo = false } = {}) {
     layout.syncViewport(window.innerWidth)
   }
 
-  async function toggleLeftPanel() {
+  function toggleLeftPanel() {
     if (layout.isMobile) {
       layout.toggleMobileView()
       return
@@ -177,7 +177,6 @@ export function createApp({ demo = false } = {}) {
 
     const showList = layout.leftCollapsed
     layout.setLeftCollapsed(!showList)
-    if (showList) await expandDesktopWindowForList()
   }
 
   function selectNote(path) {
@@ -193,20 +192,6 @@ export function createApp({ demo = false } = {}) {
   async function selectHistoryVersion(version) {
     await notes.selectHistoryVersion(repo.client, repo.repo, version)
     layout.showMobileEditor()
-  }
-
-  async function expandDesktopWindowForList() {
-    if (window.innerWidth >= 980 || (!window.__TAURI__ && !window.__TAURI_INTERNALS__)) return
-
-    try {
-      const [{ getCurrentWindow }, { LogicalSize }] = await Promise.all([
-        import('@tauri-apps/api/window'),
-        import('@tauri-apps/api/dpi'),
-      ])
-      await getCurrentWindow().setSize(new LogicalSize(980, Math.max(640, window.innerHeight)))
-    } catch {
-      // Web builds cannot resize the host window.
-    }
   }
 
   function startDemo() {

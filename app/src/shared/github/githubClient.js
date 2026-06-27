@@ -240,7 +240,7 @@ async function oauthFetch(path, options) {
     throw new Error(
       import.meta.env.DEV
         ? `GitHub login request failed through the local dev proxy: ${error.message}`
-        : `GitHub login request failed. In a plain browser build, GitHub device-login endpoints may be blocked by CORS; run through the desktop shell or a trusted proxy.`,
+        : `GitHub login request failed. In a plain browser build, GitHub device-login endpoints may be blocked by CORS; run through the app shell or a trusted proxy.`,
     )
   }
 }

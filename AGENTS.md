@@ -8,7 +8,6 @@ Notit is a Svelte note app that stores notes as Markdown files in GitHub. There 
 
 - `app/` contains the real product code.
 - `platforms/ios/` and `platforms/android/` are Capacitor shells.
-- `platforms/desktop/` is the Tauri shell.
 - `packages/notit-mcp/` is the local STDIO MCP server for Codex.
 - `.github/workflows/pages.yml` publishes the web build to GitHub Pages.
 
@@ -21,13 +20,6 @@ npm run build
 npm run check
 npm run test:e2e
 npm run mcp:notit
-```
-
-Desktop:
-
-```sh
-npm run desktop
-npm run desktop:build
 ```
 
 Mobile:

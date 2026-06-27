@@ -5,6 +5,7 @@ app/.env
 pages-dist
 playwright-report
 test-results
+/platforms/desktop/target/
 *.local
 .DS_Store
 
