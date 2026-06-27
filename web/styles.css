@@ -113,6 +113,7 @@ h1 {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 24px;
+  margin-top: 40px;
   padding: 0 0 42px;
   border-bottom: 1px solid #2a2a2a;
 }
