@@ -14,31 +14,19 @@
     app.syncLayoutToViewport()
     const stopAutosave = app.startAutosave()
     const stopDemo = app.startDemo()
-    const stopDemoOnInput = () => app.stopDemo()
     window.addEventListener('resize', app.syncLayoutToViewport)
     window.addEventListener('beforeunload', app.protectUnload)
-    if (app.demoMode) {
-      window.addEventListener('pointerdown', stopDemoOnInput, { capture: true })
-      window.addEventListener('keydown', stopDemoOnInput, { capture: true })
-      window.addEventListener('wheel', stopDemoOnInput, { capture: true })
-      window.addEventListener('focusin', stopDemoOnInput, { capture: true })
-    }
     return () => {
       stopAutosave()
       stopDemo()
       window.removeEventListener('resize', app.syncLayoutToViewport)
       window.removeEventListener('beforeunload', app.protectUnload)
-      window.removeEventListener('pointerdown', stopDemoOnInput, { capture: true })
-      window.removeEventListener('keydown', stopDemoOnInput, { capture: true })
-      window.removeEventListener('wheel', stopDemoOnInput, { capture: true })
-      window.removeEventListener('focusin', stopDemoOnInput, { capture: true })
     }
   })
 </script>
 
-<main class:left-collapsed={app.layout.leftCollapsed} class={`app-shell theme-${app.theme}`} style={`--left: ${app.layout.split}%`}>
+<main class:left-collapsed={app.layout.leftCollapsed} class={`app-shell theme-${app.theme}`} style={`--left: ${app.layout.split}%`} onpointerdown={app.resumeDemoFromEmptySpace}>
   <TopBar
-    search={app.calendar.search}
     token={app.repo.token}
     user={app.repo.user}
     loading={app.loading}
@@ -48,10 +36,10 @@
     leftCollapsed={app.layout.leftCollapsed}
     isMobile={app.layout.isMobile}
     mobileView={app.layout.mobileView}
+    onHeaderAction={app.pauseDemo}
     onToggleLeft={app.toggleLeftPanel}
     onConnect={app.repo.connect}
     onForceSync={app.forceSync}
-    onSearch={(value) => (app.calendar.search = value)}
     onToggleRepo={() => (app.layout.repoOpen = !app.layout.repoOpen)}
     onToggleAi={() => (app.layout.aiOpen = !app.layout.aiOpen)}
     onToggleSettings={() => (app.layout.settingsOpen = !app.layout.settingsOpen)}
@@ -136,6 +124,7 @@
         visualization={app.calendar.visualization}
         monthLabel={app.calendar.monthLabel}
         selectedMonth={app.calendar.selectedMonth}
+        search={app.calendar.search}
         groups={app.calendar.groups}
         notes={app.calendar.searchNotes}
         historyMode={app.notes.historyMode}
@@ -145,6 +134,7 @@
         selectedPath={app.notes.selectedPath}
         onToggleVisualization={app.calendar.toggleVisualization}
         onSelectMonth={app.selectMonth}
+        onSearch={(value) => (app.calendar.search = value)}
         onSelect={app.selectNote}
         onDelete={(note) => app.notes.deleteNote(app.repo.client, app.repo.repo, note)}
         onHistory={(note) => app.notes.showHistory(app.repo.client, app.repo.repo, note)}

@@ -2,7 +2,6 @@
   export let token = ''
   export let user = null
   export let loading = false
-  export let search = ''
   export let syncStatus = 'Synced'
   export let syncCountdown = ''
   export let showSyncCountdown = true
@@ -10,9 +9,9 @@
   export let isMobile = false
   export let mobileView = 'editor'
   export let onToggleLeft = () => {}
+  export let onHeaderAction = () => {}
   export let onConnect = () => {}
   export let onForceSync = () => {}
-  export let onSearch = () => {}
   export let onToggleRepo = () => {}
   export let onToggleAi = () => {}
   export let onToggleSettings = () => {}
@@ -21,6 +20,12 @@
 
   function runMenuAction(action) {
     menuOpen = false
+    onHeaderAction()
+    action()
+  }
+
+  function runHeaderAction(action) {
+    onHeaderAction()
     action()
   }
 </script>
@@ -28,18 +33,18 @@
 <header class:left-collapsed={leftCollapsed} class="topbar">
   {#if !leftCollapsed}
     <nav class="topbar-actions" aria-label="App sections">
-      <button class="top-action" type="button" onclick={onConnect} disabled={loading || token}>
+      <button class="top-action" type="button" onclick={() => runHeaderAction(onConnect)} disabled={loading || token}>
         {token ? `GitHub${user ? `: ${user.login}` : ''}` : 'GitHub'}
       </button>
-      <button class="top-action" type="button" onclick={onToggleRepo} disabled={!token}>Repository</button>
-      <button class="top-action" type="button" onclick={onToggleAi}>AI</button>
-      <button class="top-action" type="button" onclick={onToggleSettings}>Setting</button>
+      <button class="top-action" type="button" onclick={() => runHeaderAction(onToggleRepo)} disabled={!token}>Repository</button>
+      <button class="top-action" type="button" onclick={() => runHeaderAction(onToggleAi)}>AI</button>
+      <button class="top-action" type="button" onclick={() => runHeaderAction(onToggleSettings)}>Setting</button>
     </nav>
     <div class="topbar-splitter"></div>
   {/if}
 
   <div class="topbar-main">
-    <button class:active={leftCollapsed || isMobile} class="focus-toggle top-action" type="button" title="Toggle note list" onclick={onToggleLeft}>
+    <button class:active={leftCollapsed || isMobile} class="focus-toggle top-action" type="button" title="Toggle note list" onclick={() => runHeaderAction(onToggleLeft)}>
       {#if isMobile}
         {mobileView === 'list' ? 'Editor' : 'Notes'}
       {:else}
@@ -62,10 +67,6 @@
     {/if}
 
     <div class="topbar-right">
-      <label class="search">
-        <span>Search</span>
-        <input value={search} placeholder="title, body..." oninput={(event) => onSearch(event.currentTarget.value)} />
-      </label>
       <div class="sync-group">
         <span class:unsynced={syncStatus === 'Unsync'} class="sync-pill">
           <span aria-hidden="true">{syncStatus === 'Unsync' ? '○' : '●'}</span>
@@ -74,7 +75,7 @@
             <small>{syncCountdown}</small>
           {/if}
         </span>
-        <button class="top-action" type="button" onclick={onForceSync} disabled={loading || !token || syncStatus !== 'Unsync'}>Force Sync</button>
+        <button class="top-action" type="button" onclick={() => runHeaderAction(onForceSync)} disabled={loading || !token || syncStatus !== 'Unsync'}>Force Sync</button>
       </div>
     </div>
   </div>

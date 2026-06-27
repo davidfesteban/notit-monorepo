@@ -5,6 +5,7 @@
   export let visualization = 'calendar'
   export let monthLabel = ''
   export let selectedMonth = ''
+  export let search = ''
   export let groups = {}
   export let notes = []
   export let historyMode = false
@@ -14,6 +15,7 @@
   export let selectedPath = ''
   export let onToggleVisualization = () => {}
   export let onSelectMonth = () => {}
+  export let onSearch = () => {}
   export let onSelect = () => {}
   export let onDelete = () => {}
   export let onHistory = () => {}
@@ -23,6 +25,7 @@
 
   let listElement
   let pickerOpen = false
+  let searchOpen = false
   let pickerYear = new Date().getFullYear()
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -67,7 +70,7 @@
         {visualization === 'calendar' ? 'Calendar' : 'Constellation'}
       </button>
       <button class="month-button" type="button" onclick={openMonthPicker}>{monthLabel}</button>
-      <button class="icon-button" type="button" title="Future relation actions">...</button>
+      <button class:active={searchOpen || !!search} class="icon-button" type="button" title="Search notes" aria-label="Search notes" onclick={() => (searchOpen = !searchOpen)}>⌕</button>
       {#if pickerOpen}
         <div class="month-picker" role="dialog" aria-label="Select month">
           <div class="year-row">
@@ -97,6 +100,13 @@
       {/if}
     {/if}
   </div>
+
+  {#if !historyMode && searchOpen}
+    <label class="calendar-search">
+      <span>Search</span>
+      <input value={search} placeholder="title, body..." oninput={(event) => onSearch(event.currentTarget.value)} />
+    </label>
+  {/if}
 
   {#if historyMode}
     <div class="calendar-list" bind:this={listElement}>

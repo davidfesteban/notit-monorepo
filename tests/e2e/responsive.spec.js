@@ -23,6 +23,7 @@ test('uses two-screen notes and editor flow on phone width', async ({ page }) =>
   await expect(page.locator('.calendar-pane')).toHaveCount(0)
   await expect(page.locator('.tool-menu summary')).toBeVisible()
   await expect(page.locator('.tools')).toBeHidden()
+  await expect(page.locator('.topbar .search')).toHaveCount(0)
 
   await page.getByRole('button', { name: 'New note', exact: true }).click()
   await page.getByRole('button', { name: 'Notes', exact: true }).click()
@@ -30,6 +31,12 @@ test('uses two-screen notes and editor flow on phone width', async ({ page }) =>
   await expect(page.getByRole('button', { name: 'Editor', exact: true })).toBeVisible()
   await expect(page.locator('.calendar-pane')).toBeVisible()
   await expect(page.locator('.editor-pane')).toHaveCount(0)
+  await expect(page.locator('.topbar-right')).toBeVisible()
+
+  const searchButton = page.getByRole('button', { name: 'Search notes', exact: true })
+  await expect(searchButton).toBeVisible()
+  await searchButton.click()
+  await expect(page.locator('.calendar-search input')).toBeVisible()
 
   await page.getByRole('button', { name: /Untitled note/ }).first().click()
 
@@ -52,7 +59,7 @@ test('exposes app settings from the phone menu', async ({ page }) => {
   await expect(page.getByText('Theme')).toBeVisible()
 })
 
-test('demo mode seeds notes and animates until interaction', async ({ page }) => {
+test('demo mode only pauses from header controls and restarts from empty workspace', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/?demo=1')
 
@@ -60,10 +67,18 @@ test('demo mode seeds notes and animates until interaction', async ({ page }) =>
   await expect(page.locator('.app-shell')).toHaveClass(/theme-retro/)
   await expect(page.locator('.app-shell')).toHaveClass(/theme-notit-dark/, { timeout: 3500 })
 
+  await page.mouse.wheel(0, 400)
+  await expect(page.locator('.app-shell')).toHaveClass(/theme-zed-slim/, { timeout: 2500 })
+
   await page.getByRole('button', { name: 'Notes', exact: true }).click()
   const classAfterClick = await page.locator('.app-shell').getAttribute('class')
-  await page.waitForTimeout(2600)
+  await expect(page.getByText('Demo paused. Click empty workspace to restart.')).toBeVisible()
+  await page.waitForTimeout(1600)
   await expect(page.locator('.app-shell')).toHaveClass(classAfterClick)
+
+  await page.locator('.calendar-list').click({ position: { x: 12, y: 12 } })
+  await expect(page.locator('.app-shell')).toHaveClass(/theme-retro/, { timeout: 1500 })
+  await expect(page.locator('.app-shell')).toHaveClass(/theme-notit-dark/, { timeout: 2500 })
 })
 
 test('focus toggle hides and restores the note list on desktop width', async ({ page }) => {

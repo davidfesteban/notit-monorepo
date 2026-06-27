@@ -69,7 +69,7 @@ button:disabled {
   padding: 8px 12px;
   border-bottom: 2px solid #171b24;
   background: #c7ccd6;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .topbar.left-collapsed {
@@ -80,7 +80,7 @@ button:disabled {
   display: flex;
   min-width: 0;
   gap: 8px;
-  overflow: hidden;
+  overflow: clip;
 }
 
 .topbar-actions .top-action {
@@ -551,6 +551,21 @@ input {
   padding: 10px 12px 18px;
 }
 
+.calendar-search {
+  display: grid;
+  gap: 5px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #171b24;
+  background: #eef1f6;
+  color: #333a48;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.calendar-search input {
+  width: 100%;
+}
+
 .date-group {
   margin-bottom: 18px;
 }
@@ -593,6 +608,7 @@ input {
 }
 
 .note-select strong {
+  color: #10141e;
   white-space: nowrap;
 }
 
@@ -666,6 +682,7 @@ input {
 
 .mode-switch button.active,
 .tools button:hover,
+.icon-button.active,
 .focus-toggle.active {
   color: #ffffff;
   background: #173b70;
@@ -768,18 +785,17 @@ input {
 
   .topbar-main {
     grid-column: 1;
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .topbar-right {
+    justify-self: end;
   }
 
   .mobile-menu {
     display: block;
-  }
-
-  .search span {
-    display: none;
-  }
-
-  .search input {
-    width: clamp(96px, 28vw, 150px);
   }
 
   .sync-pill {
@@ -838,6 +854,10 @@ input {
 
   .calendar-list {
     padding: 8px 8px 72px;
+  }
+
+  .calendar-search {
+    padding: 8px;
   }
 
   .date-group article {
@@ -1220,6 +1240,7 @@ input {
 .theme-notit-dark select,
 .theme-notit-dark .sync-pill,
 .theme-notit-dark .empty-state,
+.theme-notit-dark .calendar-search,
 .theme-notit-dark .tool-menu-items,
 .theme-notit-dark .mobile-menu-items,
 .theme-notit-dark .month-picker,

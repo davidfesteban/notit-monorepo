@@ -23,10 +23,11 @@ export function createApp({ demo = false } = {}) {
   let autosaveTimer = null
   let demoTimer = null
   let demoStep = 0
+  let demoPaused = $state(false)
   let syncing = false
 
   const loading = $derived(repo.loading || notes.loading)
-  const status = $derived(notes.status || repo.status)
+  const status = $derived(demoPaused ? 'Demo paused. Click empty workspace to restart.' : notes.status || repo.status)
   const error = $derived(editor.error || notes.error || repo.error)
 
   async function initialize() {
@@ -210,6 +211,7 @@ export function createApp({ demo = false } = {}) {
 
   function startDemo() {
     if (!demo || demoTimer) return stopDemo
+    demoPaused = false
     runDemoStep()
     demoTimer = setInterval(runDemoStep, 950)
     return stopDemo
@@ -219,6 +221,19 @@ export function createApp({ demo = false } = {}) {
     if (!demoTimer) return
     clearInterval(demoTimer)
     demoTimer = null
+  }
+
+  function pauseDemo() {
+    if (!demo) return
+    stopDemo()
+    demoPaused = true
+  }
+
+  function resumeDemoFromEmptySpace(event) {
+    if (!demo || !demoPaused || demoTimer) return
+    if (event?.target?.closest?.('button, a, input, textarea, select, summary, label, .repo-panel, .notice')) return
+    demoStep = 0
+    startDemo()
   }
 
   function runDemoStep() {
@@ -270,6 +285,7 @@ export function createApp({ demo = false } = {}) {
     layout.aiOpen = false
     layout.repoOpen = false
     layout.settingsOpen = false
+    demoPaused = false
     autosaveEnabled = true
     showSyncCountdown = true
     showCodeLineNumbers = true
@@ -291,6 +307,7 @@ export function createApp({ demo = false } = {}) {
     editor,
     layout,
     demoMode: demo,
+    get demoPaused() { return demoPaused },
     get autosaveEnabled() { return autosaveEnabled },
     get autosaveMinutes() { return autosaveMinutes },
     get showSyncCountdown() { return showSyncCountdown },
@@ -322,6 +339,8 @@ export function createApp({ demo = false } = {}) {
     startAutosave,
     startDemo,
     stopDemo,
+    pauseDemo,
+    resumeDemoFromEmptySpace,
     stopAutosave,
     protectUnload,
     useRepo,
