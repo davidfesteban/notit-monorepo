@@ -244,6 +244,9 @@ h1 {
 
 .try-head a,
 .links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   border: 1px solid #f4f4f4;
   padding: 10px 12px;
   background: #050505;
@@ -253,6 +256,12 @@ h1 {
     box-shadow 140ms ease,
     background 140ms ease,
     color 140ms ease;
+}
+
+.links svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
 }
 
 .try-head a:hover,
