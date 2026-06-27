@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte'
   import { createApp } from './app/createApp.svelte.js'
+  import AiPanel from './features/ai/AiPanel.svelte'
   import CalendarPane from './features/calendar/CalendarPane.svelte'
   import EditorPane from './features/editor/EditorPane.svelte'
   import RepoPanel from './features/repo/RepoPanel.svelte'
@@ -64,10 +65,7 @@
   {/if}
 
   {#if app.layout.aiOpen}
-    <section class="repo-panel">
-      <strong>AI</strong>
-      <span>Placeholder for provider/model settings. No AI calls are wired in this version.</span>
-    </section>
+    <AiPanel repo={app.repo.repo} />
   {/if}
 
   {#if app.layout.settingsOpen}

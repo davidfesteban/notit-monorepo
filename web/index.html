@@ -6,7 +6,7 @@
         <meta name="theme-color" content="#050505" />
         <meta
             name="description"
-            content="Notit is a vibe coded open-source Git note app. No subscription, no backend, full client-side sync, desktop and mobile ready."
+            content="Open-source Markdown notes. GitHub sync. ChatGPT compatible. No backend. No subscription. Private."
         />
         <meta
             name="keywords"
@@ -21,7 +21,7 @@
         <meta property="og:title" content="Notit - Open-source Git note app" />
         <meta
             property="og:description"
-            content="No subscription. No backend. Full client-side sync. Your vibe coded open-source Note git app."
+            content="Open-source Markdown notes. GitHub sync. ChatGPT compatible. No backend. No subscription. Private."
         />
         <meta property="og:url" content="https://davidfesteban.github.io/notit-monorepo/" />
         <meta property="og:image" content="https://davidfesteban.github.io/notit-monorepo/og.svg" />
@@ -33,11 +33,13 @@
         <meta name="twitter:title" content="Notit - Open-source Git note app" />
         <meta
             name="twitter:description"
-            content="No subscription. No backend. Full client-side sync. Your vibe coded open-source Note git app."
+            content="Open-source Markdown notes. GitHub sync. ChatGPT compatible. No backend. No subscription. Private."
         />
         <meta name="twitter:image" content="https://davidfesteban.github.io/notit-monorepo/og.svg" />
 
         <title>Notit - Open-source Git note app</title>
+        <link rel="icon" href="./notit_logo.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="./notit_logo.png" />
         <link rel="stylesheet" href="./styles.css" />
         <script type="application/ld+json">
             {
@@ -46,7 +48,7 @@
                 "name": "Notit",
                 "applicationCategory": "ProductivityApplication",
                 "operatingSystem": "Web, macOS, Windows, Linux, iOS, Android",
-                "description": "Notit is a vibe coded open-source Git note app with no subscription, no backend, and full client-side sync.",
+                "description": "Open-source Markdown notes. GitHub sync. ChatGPT compatible. No backend. No subscription. Private.",
                 "url": "https://davidfesteban.github.io/notit-monorepo/",
                 "codeRepository": "https://github.com/davidfesteban/notit-monorepo",
                 "author": {
@@ -64,13 +66,38 @@
     <body>
         <main class="page">
             <section class="hero" aria-labelledby="title">
+                <img class="hero-logo" src="./notit_logo.svg" alt="" />
                 <p class="eyebrow">OPEN SOURCE / GIT NOTES / CLIENT SIDE</p>
                 <h1 id="title">Notit</h1>
-                <p class="tagline">Your vibe coded open-source Note git app.</p>
-                <p class="statement">
-                    No subscription, no backend, full client-side MCP
-                    compatible. Desktop and App.
+                <p class="tagline">
+                    Open-source Markdown notes. GitHub sync. ChatGPT compatible.
+                    No backend. No subscription. Private.
                 </p>
+                <p class="statement">
+                    Free multidevice sync with notes stored as Markdown in your
+                    own GitHub repository. Desktop and App.
+                </p>
+            </section>
+
+            <section class="ai-connect" aria-labelledby="ai-title">
+                <div>
+                    <p class="eyebrow">AI CONNECTOR</p>
+                    <h2 id="ai-title">Use Notit from ChatGPT</h2>
+                    <p>
+                        We use the Notit GPT with GitHub as the connector. Your
+                        notes stay as Markdown in your repo, and ChatGPT reads
+                        them from there.
+                    </p>
+                </div>
+                <div class="ai-connect-actions">
+                    <a
+                        href="https://chatgpt.com/g/g-6a3f9ccb01008191be91c471e86a2225-notit"
+                        target="_blank"
+                        rel="noreferrer"
+                        >Open Notit GPT</a
+                    >
+                    <code>Default notes path: notes/*.md</code>
+                </div>
             </section>
 
             <section class="pitch">
@@ -128,6 +155,12 @@
                     target="_blank"
                     rel="noreferrer"
                     >Download desktop</a
+                >
+                <a
+                    href="https://chatgpt.com/g/g-6a3f9ccb01008191be91c471e86a2225-notit"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Open Notit GPT</a
                 >
                 <a
                     href="https://github.com/davidfesteban/notit-monorepo/issues"

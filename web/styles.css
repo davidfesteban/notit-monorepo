@@ -44,6 +44,14 @@ a {
   border-bottom: 1px solid #2a2a2a;
 }
 
+.hero-logo {
+  width: 72px;
+  height: 72px;
+  border: 1px solid #f4f4f4;
+  background: #ffffff;
+  box-shadow: 5px 5px 0 #2d5cff;
+}
+
 .eyebrow,
 .links,
 .try-head,
@@ -106,6 +114,50 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
   padding: 0 0 64px;
+}
+
+.ai-connect {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
+  padding: 0 0 64px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.ai-connect h2 {
+  margin: 10px 0;
+  color: #ffffff;
+  font-size: clamp(34px, 5vw, 72px);
+  line-height: 0.98;
+}
+
+.ai-connect p {
+  max-width: 760px;
+  margin: 0;
+  color: #d7d7d7;
+  font-size: clamp(18px, 2.2vw, 28px);
+  line-height: 1.25;
+}
+
+.ai-connect-actions {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+}
+
+.ai-connect-actions a,
+.ai-connect-actions code {
+  border: 1px solid #f4f4f4;
+  padding: 10px 12px;
+  background: #050505;
+  font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  box-shadow: 4px 4px 0 #2d5cff;
+}
+
+.ai-connect-actions code {
+  color: #cfcfcf;
+  box-shadow: none;
 }
 
 .info-card {
@@ -256,6 +308,16 @@ h1 {
   .info-grid {
     grid-template-columns: 1fr;
     padding-bottom: 46px;
+  }
+
+  .ai-connect {
+    grid-template-columns: 1fr;
+    align-items: start;
+    padding-bottom: 46px;
+  }
+
+  .ai-connect-actions {
+    justify-items: stretch;
   }
 
   .info-card {

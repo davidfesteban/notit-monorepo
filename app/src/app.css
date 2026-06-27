@@ -235,6 +235,152 @@ input {
   color: #333a48;
 }
 
+.ai-panel {
+  justify-content: space-between;
+}
+
+.ai-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ai-heading img {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #171b24;
+  background: #ffffff;
+}
+
+.ai-heading div {
+  display: grid;
+  gap: 4px;
+}
+
+.ai-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.ai-actions a {
+  display: inline-grid;
+  place-items: center;
+  padding: 0 10px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgb(5 5 5 / 0.72);
+}
+
+.modal-hitbox {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: transparent;
+}
+
+.notit-modal {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(860px, 100%);
+  max-height: min(760px, calc(100svh - 36px));
+  overflow: auto;
+  gap: 16px;
+  padding: 18px;
+  border: 2px solid #171b24;
+  background: #f8f9fb;
+  box-shadow: 8px 8px 0 #173b70;
+}
+
+.notit-modal header,
+.notit-modal footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.notit-modal h2,
+.notit-modal h3,
+.notit-modal p {
+  margin: 0;
+}
+
+.modal-kicker {
+  color: #6a7282;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.modal-grid article {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #171b24;
+  background: #ffffff;
+}
+
+.modal-grid ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.modal-grid code,
+.prompt-box textarea {
+  border: 1px solid #171b24;
+  background: #eef1f6;
+}
+
+.modal-grid code {
+  overflow: auto;
+  padding: 8px;
+  font-size: 12px;
+}
+
+.prompt-box {
+  display: grid;
+  gap: 6px;
+}
+
+.prompt-box textarea {
+  min-height: 86px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.notit-modal button,
+.notit-modal a {
+  min-height: 32px;
+  border: 1px solid #171b24;
+  color: #10141e;
+  background: #eef1f6;
+  box-shadow: 2px 2px 0 #171b24;
+}
+
+.notit-modal a {
+  display: inline-grid;
+  width: fit-content;
+  place-items: center;
+  padding: 0 10px;
+}
+
 .setting-row {
   display: flex;
   align-items: center;
@@ -595,6 +741,18 @@ input {
   .calendar-pane,
   .splitter {
     display: none;
+  }
+
+  .ai-panel,
+  .ai-actions,
+  .modal-grid {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ai-actions {
+    margin-left: 0;
   }
 }
 
