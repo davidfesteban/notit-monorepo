@@ -33,23 +33,23 @@ a {
 .page {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 72px 0 36px;
+  padding: 48px 0 32px;
 }
 
 .hero {
   display: grid;
-  gap: 16px;
-  min-height: 48svh;
+  gap: 12px;
+  min-height: 34svh;
   align-content: center;
   border-bottom: 1px solid #2a2a2a;
 }
 
 .hero-logo {
-  width: 72px;
-  height: 72px;
+  width: 48px;
+  height: 48px;
   border: 1px solid #f4f4f4;
   background: #ffffff;
-  box-shadow: 5px 5px 0 #2d5cff;
+  box-shadow: 4px 4px 0 #2d5cff;
 }
 
 .eyebrow,
@@ -70,8 +70,8 @@ h1 {
   margin: 0;
   color: #ffffff;
   font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
-  font-size: clamp(72px, 18vw, 210px);
-  line-height: 0.82;
+  font-size: clamp(52px, 10vw, 128px);
+  line-height: 0.86;
   letter-spacing: 0;
   text-transform: uppercase;
   text-shadow:
@@ -80,19 +80,19 @@ h1 {
 }
 
 .tagline {
-  max-width: 760px;
+  max-width: 840px;
   margin: 0;
   color: #ffffff;
-  font-size: clamp(28px, 5vw, 68px);
+  font-size: clamp(22px, 3.4vw, 44px);
   font-weight: 750;
-  line-height: 0.98;
+  line-height: 1.02;
 }
 
 .statement {
-  max-width: 780px;
+  max-width: 760px;
   margin: 8px 0 0;
   color: #d7d7d7;
-  font-size: clamp(16px, 2vw, 24px);
+  font-size: clamp(15px, 1.6vw, 20px);
   line-height: 1.4;
 }
 
@@ -298,7 +298,13 @@ h1 {
   }
 
   .hero {
-    min-height: 56svh;
+    min-height: auto;
+    padding-bottom: 32px;
+  }
+
+  .hero-logo {
+    width: 42px;
+    height: 42px;
   }
 
   .pitch {
