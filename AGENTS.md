@@ -38,7 +38,7 @@ npm run android
 
 ## Environment
 
-Use one app env file only:
+Use one local app env file only:
 
 ```sh
 app/.env
@@ -49,6 +49,8 @@ Required value:
 ```sh
 VITE_GITHUB_CLIENT_ID=...
 ```
+
+Do not commit `app/.env`; keep `app/.env.example` as the tracked template.
 
 ## Notes For Agents
 

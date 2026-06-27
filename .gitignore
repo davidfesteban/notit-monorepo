@@ -1,6 +1,7 @@
 node_modules
 dist
 dist-ssr
+app/.env
 playwright-report
 test-results
 *.local

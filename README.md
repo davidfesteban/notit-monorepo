@@ -28,7 +28,7 @@ npm run ios
 npm run android
 ```
 
-Create `app/.env` with the GitHub client id:
+Create a local `app/.env` from `app/.env.example` with the GitHub client id:
 
 ```sh
 VITE_GITHUB_CLIENT_ID=your_client_id
