@@ -19,6 +19,6 @@
     <input value={repoName} placeholder="notit-notes" oninput={(event) => onRepoName(event.currentTarget.value)} />
   </label>
   <button type="button" onclick={onUseExisting} disabled={loading}>Use existing</button>
-  <button type="button" onclick={onCreateIfMissing} disabled={loading}>Create if missing</button>
+  <button type="button" onclick={onCreateIfMissing} disabled={loading}>Create private repo</button>
   <button type="button" onclick={onDisconnect}>Disconnect</button>
 </section>
