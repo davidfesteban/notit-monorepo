@@ -95,6 +95,21 @@
       <button type="button" onclick={() => insert('```notit-code title=\"Code\"\n', '\n```', 'console.log(\"later\")')} disabled={readOnly}>Code</button>
     </div>
 
+    <details class="tool-menu">
+      <summary>Tools</summary>
+      <div class="tool-menu-items">
+        <button type="button" onclick={() => insert('# ', '', 'Heading')} disabled={readOnly}>H1</button>
+        <button type="button" onclick={() => insert('## ', '', 'Heading')} disabled={readOnly}>H2</button>
+        <button type="button" onclick={() => insert('', '', 'Normal text')} disabled={readOnly}>Aa</button>
+        <button type="button" onclick={() => insert('- ', '', 'Bullet')} disabled={readOnly}>•</button>
+        <button type="button" onclick={() => insert('- [ ] ', '', 'Task')} disabled={readOnly}>☐</button>
+        <button type="button" onclick={() => insert('| A | B |\n| --- | --- |\n| 1 | 2 |')} disabled={readOnly}>Table</button>
+        <button type="button" onclick={() => insert('```notit-table\n', '\n```', 'a,b,c\n1,2,3\n4,5,6')} disabled={readOnly}>TableV2</button>
+        <button type="button" onclick={() => insert('```mermaid\n', '\n```', 'flowchart TD\n  A --> B')} disabled={readOnly}>Diagram</button>
+        <button type="button" onclick={() => insert('```notit-code title=\"Code\"\n', '\n```', 'console.log(\"later\")')} disabled={readOnly}>Code</button>
+      </div>
+    </details>
+
     <button class="save-button" type="button" onclick={onSave} disabled={loading || !selectedNote || readOnly}>Save</button>
   </header>
 

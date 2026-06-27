@@ -22,7 +22,6 @@ body,
 }
 
 body {
-  min-width: 1120px;
   margin: 0;
 }
 
@@ -62,22 +61,58 @@ button:disabled {
 }
 
 .topbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(260px, var(--left)) 8px minmax(0, 1fr);
   align-items: center;
   gap: 8px;
   min-height: 52px;
   padding: 8px 12px;
   border-bottom: 2px solid #171b24;
   background: #c7ccd6;
+  overflow: hidden;
 }
 
-.wordmark {
-  padding: 7px 11px;
-  border: 2px solid #171b24;
-  color: #ffffff;
-  background: #173b70;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+.topbar.left-collapsed {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.topbar-actions {
+  display: flex;
+  min-width: 0;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.topbar-actions .top-action {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-splitter {
+  width: 8px;
+  height: 100%;
+}
+
+.topbar-main {
+  grid-column: 3;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar.left-collapsed .topbar-main {
+  grid-column: 1;
+}
+
+.topbar-right {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
 }
 
 .top-action,
@@ -106,8 +141,8 @@ button:disabled {
 .search {
   display: flex;
   align-items: center;
+  min-width: 0;
   gap: 8px;
-  margin-left: auto;
   color: #333a48;
   font-size: 12px;
   text-transform: uppercase;
@@ -143,7 +178,6 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: 14px;
 }
 
 input,
@@ -160,7 +194,7 @@ input {
 }
 
 .search input {
-  width: 260px;
+  width: clamp(120px, 18vw, 260px);
 }
 
 .notice,
@@ -235,10 +269,14 @@ input {
 
 .workspace {
   display: grid;
-  grid-template-columns: var(--left) 8px minmax(0, 1fr);
+  grid-template-columns: minmax(260px, var(--left)) 8px minmax(0, 1fr);
   min-height: 0;
   overflow: hidden;
   flex: 1;
+}
+
+.workspace.left-collapsed {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .calendar-pane,
@@ -430,29 +468,67 @@ input {
 }
 
 .editor-toolbar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 12px;
   border-bottom: 2px solid #171b24;
   background: #d7dbe3;
+  overflow: visible;
 }
 
 .mode-switch {
+  flex: 0 0 auto;
   display: flex;
   gap: 6px;
 }
 
 .mode-switch button.active,
-.tools button:hover {
+.tools button:hover,
+.focus-toggle.active {
   color: #ffffff;
   background: #173b70;
 }
 
 .tools {
   display: flex;
+  min-width: 0;
   gap: 6px;
   margin-left: 8px;
+}
+
+.tool-menu {
+  display: none;
+  position: relative;
+}
+
+.tool-menu summary {
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid #171b24;
+  background: #eef1f6;
+  box-shadow: 2px 2px 0 #171b24;
+  list-style: none;
+  cursor: pointer;
+}
+
+.tool-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.tool-menu-items {
+  position: absolute;
+  z-index: 20;
+  top: 40px;
+  left: 0;
+  display: grid;
+  min-width: 150px;
+  gap: 6px;
+  padding: 8px;
+  border: 2px solid #171b24;
+  background: #ffffff;
+  box-shadow: 4px 4px 0 #171b24;
 }
 
 .save-button {
@@ -460,6 +536,66 @@ input {
   min-width: 88px;
   color: #ffffff !important;
   background: #173b70 !important;
+}
+
+@media (max-width: 1120px) {
+  .tools {
+    display: none;
+  }
+
+  .tool-menu {
+    display: block;
+  }
+
+  .editor-toolbar {
+    gap: 6px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .topbar-actions,
+  .topbar-splitter {
+    display: none;
+  }
+
+  .topbar-main {
+    grid-column: 1;
+  }
+
+  .search span {
+    display: none;
+  }
+
+  .search input {
+    width: clamp(96px, 28vw, 150px);
+  }
+
+  .sync-pill {
+    padding: 0 6px;
+  }
+
+  .sync-group .top-action {
+    max-width: 92px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .calendar-pane,
+  .splitter {
+    display: none;
+  }
 }
 
 .title-row {

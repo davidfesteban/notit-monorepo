@@ -3,6 +3,11 @@ export function createLayoutState() {
   let aiOpen = $state(false)
   let repoOpen = $state(false)
   let settingsOpen = $state(false)
+  let leftCollapsed = $state(false)
+  let autoCollapsed = false
+
+  const compactWidth = 900
+  const expandedWidth = 1080
 
   function beginResize(event) {
     const startX = event.clientX
@@ -22,6 +27,20 @@ export function createLayoutState() {
     window.addEventListener('pointerup', up)
   }
 
+  function setLeftCollapsed(value, auto = false) {
+    leftCollapsed = value
+    autoCollapsed = auto
+  }
+
+  function syncViewport(width) {
+    if (width < compactWidth) {
+      if (!leftCollapsed) setLeftCollapsed(true, true)
+      return
+    }
+
+    if (autoCollapsed && width >= expandedWidth) setLeftCollapsed(false)
+  }
+
   return {
     get split() { return split },
     get aiOpen() { return aiOpen },
@@ -30,6 +49,10 @@ export function createLayoutState() {
     set repoOpen(value) { repoOpen = value },
     get settingsOpen() { return settingsOpen },
     set settingsOpen(value) { settingsOpen = value },
+    get leftCollapsed() { return leftCollapsed },
+    set leftCollapsed(value) { setLeftCollapsed(value) },
+    setLeftCollapsed,
+    syncViewport,
     beginResize,
   }
 }

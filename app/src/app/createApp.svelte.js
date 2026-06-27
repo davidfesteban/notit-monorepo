@@ -146,6 +146,30 @@ export function createApp() {
     repo.setStatus('GitHub code copied.')
   }
 
+  function syncLayoutToViewport() {
+    layout.syncViewport(window.innerWidth)
+  }
+
+  async function toggleLeftPanel() {
+    const showList = layout.leftCollapsed
+    layout.setLeftCollapsed(!showList)
+    if (showList) await expandDesktopWindowForList()
+  }
+
+  async function expandDesktopWindowForList() {
+    if (window.innerWidth >= 980 || (!window.__TAURI__ && !window.__TAURI_INTERNALS__)) return
+
+    try {
+      const [{ getCurrentWindow }, { LogicalSize }] = await Promise.all([
+        import('@tauri-apps/api/window'),
+        import('@tauri-apps/api/dpi'),
+      ])
+      await getCurrentWindow().setSize(new LogicalSize(980, Math.max(640, window.innerHeight)))
+    } catch {
+      // Web builds cannot resize the host window.
+    }
+  }
+
   function formatSyncCountdown() {
     if (!autosaveEnabled) return 'paused'
     const minutes = Math.floor(syncRemainingSeconds / 60)
@@ -176,6 +200,8 @@ export function createApp() {
     forceSync,
     selectMonth,
     copyDeviceCode,
+    syncLayoutToViewport,
+    toggleLeftPanel,
     get loading() { return loading },
     get status() { return status },
     get error() { return error },

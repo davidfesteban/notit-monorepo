@@ -9,11 +9,13 @@
     "build": "npm run build -w app",
     "check": "npm run check -w app",
     "preview": "npm run preview -w app",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "mobile:sync": "npm run build && cap sync",
     "ios": "npm run mobile:sync && cap open ios",
     "android": "npm run mobile:sync && cap open android",
-    "desktop": "cd platforms/desktop && ../../node_modules/.bin/tauri dev",
-    "desktop:build": "cd platforms/desktop && ../../node_modules/.bin/tauri build"
+    "desktop": ". \"$HOME/.cargo/env\" && cd platforms/desktop && ../../node_modules/.bin/tauri dev",
+    "desktop:build": ". \"$HOME/.cargo/env\" && cd platforms/desktop && ../../node_modules/.bin/tauri build"
   },
   "dependencies": {
     "@capacitor/core": "^8.4.1",
@@ -23,6 +25,7 @@
     "@capacitor/android": "^8.4.1",
     "@capacitor/cli": "^8.4.1",
     "@capacitor/ios": "^8.4.1",
+    "@playwright/test": "^1.61.1",
     "@tauri-apps/cli": "^2.11.3"
   }
 }

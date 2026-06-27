@@ -10,16 +10,19 @@
 
   onMount(() => {
     app.initialize()
+    app.syncLayoutToViewport()
     const stopAutosave = app.startAutosave()
+    window.addEventListener('resize', app.syncLayoutToViewport)
     window.addEventListener('beforeunload', app.protectUnload)
     return () => {
       stopAutosave()
+      window.removeEventListener('resize', app.syncLayoutToViewport)
       window.removeEventListener('beforeunload', app.protectUnload)
     }
   })
 </script>
 
-<main class="app-shell" style={`--left: ${app.layout.split}%`}>
+<main class:left-collapsed={app.layout.leftCollapsed} class="app-shell" style={`--left: ${app.layout.split}%`}>
   <TopBar
     search={app.calendar.search}
     token={app.repo.token}
@@ -28,6 +31,8 @@
     syncStatus={app.syncStatus}
     syncCountdown={app.syncCountdown}
     showSyncCountdown={app.showSyncCountdown}
+    leftCollapsed={app.layout.leftCollapsed}
+    onToggleLeft={app.toggleLeftPanel}
     onConnect={app.repo.connect}
     onForceSync={app.forceSync}
     onSearch={(value) => (app.calendar.search = value)}
@@ -99,29 +104,31 @@
     <section class:error={app.error} class="status-line">{app.error || app.status}</section>
   {/if}
 
-  <section class="workspace">
-    <CalendarPane
-      visualization={app.calendar.visualization}
-      monthLabel={app.calendar.monthLabel}
-      selectedMonth={app.calendar.selectedMonth}
-      groups={app.calendar.groups}
-      notes={app.calendar.searchNotes}
-      historyMode={app.notes.historyMode}
-      historyVersions={app.notes.historyVersions}
-      historyBaseNote={app.notes.historyBaseNote}
-      selectedHistoryCommitSha={app.notes.selectedHistoryCommitSha}
-      selectedPath={app.notes.selectedPath}
-      onToggleVisualization={app.calendar.toggleVisualization}
-      onSelectMonth={app.selectMonth}
-      onSelect={(path) => (app.notes.selectedPath = path)}
-      onDelete={(note) => app.notes.deleteNote(app.repo.client, app.repo.repo, note)}
-      onHistory={(note) => app.notes.showHistory(app.repo.client, app.repo.repo, note)}
-      onSelectHistory={(version) => app.notes.selectHistoryVersion(app.repo.client, app.repo.repo, version)}
-      onRestoreHistory={(version) => app.notes.restoreHistoryVersion(app.repo.client, app.repo.repo, version)}
-      onExitHistory={app.notes.exitHistory}
-    />
+  <section class:left-collapsed={app.layout.leftCollapsed} class="workspace">
+    {#if !app.layout.leftCollapsed}
+      <CalendarPane
+        visualization={app.calendar.visualization}
+        monthLabel={app.calendar.monthLabel}
+        selectedMonth={app.calendar.selectedMonth}
+        groups={app.calendar.groups}
+        notes={app.calendar.searchNotes}
+        historyMode={app.notes.historyMode}
+        historyVersions={app.notes.historyVersions}
+        historyBaseNote={app.notes.historyBaseNote}
+        selectedHistoryCommitSha={app.notes.selectedHistoryCommitSha}
+        selectedPath={app.notes.selectedPath}
+        onToggleVisualization={app.calendar.toggleVisualization}
+        onSelectMonth={app.selectMonth}
+        onSelect={(path) => (app.notes.selectedPath = path)}
+        onDelete={(note) => app.notes.deleteNote(app.repo.client, app.repo.repo, note)}
+        onHistory={(note) => app.notes.showHistory(app.repo.client, app.repo.repo, note)}
+        onSelectHistory={(version) => app.notes.selectHistoryVersion(app.repo.client, app.repo.repo, version)}
+        onRestoreHistory={(version) => app.notes.restoreHistoryVersion(app.repo.client, app.repo.repo, version)}
+        onExitHistory={app.notes.exitHistory}
+      />
 
-    <button class="splitter" type="button" aria-label="Resize columns" onpointerdown={app.layout.beginResize}></button>
+      <button class="splitter" type="button" aria-label="Resize columns" onpointerdown={app.layout.beginResize}></button>
+    {/if}
 
     <EditorPane
       selectedNote={app.notes.selectedNote}

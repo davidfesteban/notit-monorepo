@@ -2,6 +2,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte'
 
 // https://vite.dev/config/
 export default {
+  base: process.env.VITE_BASE_PATH || '/',
   plugins: [svelte({ configFile: false })],
   server: {
     proxy: {
