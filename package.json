@@ -17,7 +17,8 @@
     "ios": "npm run mobile:sync && cap open ios",
     "android": "npm run mobile:sync && cap open android",
     "desktop": ". \"$HOME/.cargo/env\" && cd platforms/desktop && ../../node_modules/.bin/tauri dev",
-    "desktop:build": ". \"$HOME/.cargo/env\" && cd platforms/desktop && ../../node_modules/.bin/tauri build"
+    "desktop:build": ". \"$HOME/.cargo/env\" && cd platforms/desktop && ../../node_modules/.bin/tauri build",
+    "macos-distribute": "bash scripts/macos-distribute.sh"
   },
   "dependencies": {
     "@capacitor/core": "^8.4.1",
