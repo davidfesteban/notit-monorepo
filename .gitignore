@@ -3,9 +3,10 @@ dist
 dist-ssr
 app/.env
 pages-dist
+build
 playwright-report
 test-results
-/platforms/desktop/target/
+/platforms/desktop/
 *.local
 .DS_Store
 
