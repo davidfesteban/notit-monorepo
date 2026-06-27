@@ -6,8 +6,8 @@
   "build": {
     "frontendDist": "../../app/dist",
     "devUrl": "http://localhost:5173",
-    "beforeDevCommand": "npm run dev -w app -- --host 127.0.0.1",
-    "beforeBuildCommand": "npm run build"
+    "beforeDevCommand": "cd \"$(git rev-parse --show-toplevel)\" && npm run dev -w app -- --host 127.0.0.1",
+    "beforeBuildCommand": "cd \"$(git rev-parse --show-toplevel)\" && npm run build"
   },
   "app": {
     "windows": [
