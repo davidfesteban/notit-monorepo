@@ -84,6 +84,16 @@ test('closes open menus and panels when clicking elsewhere', async ({ page }) =>
   await expect(page.locator('.settings-panel')).toHaveCount(0)
 })
 
+test('dismisses status messages', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  await page.getByRole('button', { name: 'New note', exact: true }).click()
+  await expect(page.locator('.status-line')).toContainText('New local draft')
+  await page.getByRole('button', { name: 'Dismiss message', exact: true }).click()
+  await expect(page.locator('.status-line')).toHaveCount(0)
+})
+
 test('demo mode only pauses from header controls and restarts from empty workspace', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/?demo=1')

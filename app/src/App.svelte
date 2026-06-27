@@ -114,8 +114,11 @@
     </section>
   {/if}
 
-  {#if app.error || app.status}
-    <section class:error={app.error} class="status-line">{app.error || app.status}</section>
+  {#if app.noticeVisible}
+    <section class:error={app.noticeIsError} class="status-line">
+      <span>{app.noticeMessage}</span>
+      <button type="button" aria-label="Dismiss message" onclick={app.dismissNotice}>X</button>
+    </section>
   {/if}
 
   <section

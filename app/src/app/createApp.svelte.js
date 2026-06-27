@@ -24,11 +24,14 @@ export function createApp({ demo = false } = {}) {
   let demoTimer = null
   let demoStep = 0
   let demoPaused = $state(false)
+  let dismissedNotice = $state('')
   let syncing = false
 
   const loading = $derived(repo.loading || notes.loading)
   const status = $derived(demoPaused ? 'Demo paused. Click empty workspace to restart.' : notes.status || repo.status)
   const error = $derived(editor.error || notes.error || repo.error)
+  const noticeMessage = $derived(error || status)
+  const noticeVisible = $derived(!!noticeMessage && noticeMessage !== dismissedNotice)
 
   async function initialize() {
     if (demo) {
@@ -228,6 +231,10 @@ export function createApp({ demo = false } = {}) {
     layout.settingsOpen = false
   }
 
+  function dismissNotice() {
+    dismissedNotice = noticeMessage
+  }
+
   function runDemoStep() {
     const steps = [
       resetDemo,
@@ -327,6 +334,10 @@ export function createApp({ demo = false } = {}) {
     get loading() { return loading },
     get status() { return status },
     get error() { return error },
+    get noticeMessage() { return noticeMessage },
+    get noticeVisible() { return noticeVisible },
+    get noticeIsError() { return !!error },
+    dismissNotice,
     initialize,
     startAutosave,
     startDemo,

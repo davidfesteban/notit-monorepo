@@ -460,6 +460,22 @@ input {
   min-height: 36px;
   color: #173b70;
   font-weight: 700;
+  justify-content: space-between;
+}
+
+.status-line span {
+  min-width: 0;
+}
+
+.status-line button {
+  width: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  border: 1px solid #171b24;
+  background: #ffffff;
+  color: #171b24;
+  font-weight: 900;
+  box-shadow: 2px 2px 0 #171b24;
 }
 
 .status-line.error {
