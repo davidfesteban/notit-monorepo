@@ -55,7 +55,7 @@ a {
 .eyebrow,
 .links,
 .try-head,
-.statement {
+.hero-points {
   font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
 }
 
@@ -79,21 +79,23 @@ h1 {
     -4px 0 0 #ffffff;
 }
 
-.tagline {
-  max-width: 840px;
-  margin: 0;
-  color: #ffffff;
-  font-size: clamp(22px, 3.4vw, 44px);
-  font-weight: 750;
-  line-height: 1.02;
+.hero-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 760px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-.statement {
-  max-width: 760px;
-  margin: 8px 0 0;
-  color: #d7d7d7;
-  font-size: clamp(15px, 1.6vw, 20px);
-  line-height: 1.4;
+.hero-points li {
+  border: 1px solid #3a3a3a;
+  padding: 7px 9px;
+  color: #f4f4f4;
+  background: #101010;
+  font-size: clamp(12px, 1.5vw, 15px);
+  font-weight: 700;
 }
 
 .pitch {
@@ -121,23 +123,23 @@ h1 {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 24px;
-  padding: 0 0 64px;
+  padding: 0 0 42px;
   border-bottom: 1px solid #2a2a2a;
 }
 
 .ai-connect h2 {
-  margin: 10px 0;
+  margin: 8px 0;
   color: #ffffff;
-  font-size: clamp(34px, 5vw, 72px);
-  line-height: 0.98;
+  font-size: clamp(24px, 3.2vw, 42px);
+  line-height: 1;
 }
 
 .ai-connect p {
-  max-width: 760px;
+  max-width: 620px;
   margin: 0;
   color: #d7d7d7;
-  font-size: clamp(18px, 2.2vw, 28px);
-  line-height: 1.25;
+  font-size: clamp(14px, 1.6vw, 18px);
+  line-height: 1.35;
 }
 
 .ai-connect-actions {
@@ -248,8 +250,10 @@ h1 {
   align-items: center;
   gap: 8px;
   border: 1px solid #f4f4f4;
-  padding: 10px 12px;
+  min-height: 38px;
+  padding: 9px 11px;
   background: #050505;
+  font-size: 13px;
   box-shadow: 4px 4px 0 #2d5cff;
   transition:
     transform 140ms ease,
@@ -259,8 +263,8 @@ h1 {
 }
 
 .links svg {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   flex: 0 0 auto;
 }
 
