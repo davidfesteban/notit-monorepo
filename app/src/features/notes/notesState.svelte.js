@@ -12,6 +12,7 @@ export function createNotesState() {
   let historyBaseNote = $state(null)
   let historyVersions = $state([])
   let selectedHistoryNote = $state(null)
+  let selectedHistoryCommitSha = $state('')
   let commitMeta = $state(session.commitMeta || {})
   let loading = $state(false)
   let syncing = false
@@ -215,6 +216,7 @@ export function createNotesState() {
       historyVersions = await client.listNoteHistory(repo.owner, repo.name, note.path)
       historyMode = true
       selectedHistoryNote = null
+      selectedHistoryCommitSha = ''
       status = historyVersions.length ? 'History loaded.' : 'No history for this note yet.'
     } catch (err) {
       error = err.message
@@ -235,6 +237,7 @@ export function createNotesState() {
         date: version.date,
         fileSha: file.fileSha,
       })
+      selectedHistoryCommitSha = version.commitSha
       status = `Viewing ${version.commitSha.slice(0, 7)}.`
     } catch (err) {
       error = err.message
@@ -248,6 +251,42 @@ export function createNotesState() {
     historyBaseNote = null
     historyVersions = []
     selectedHistoryNote = null
+    selectedHistoryCommitSha = ''
+  }
+
+  async function restoreHistoryVersion(client, repo, version) {
+    if (!client || !repo.owner || !repo.name || !historyBaseNote || !version) return
+    loading = true
+    clearMessage()
+
+    try {
+      const file = await client.getNoteAtCommit(repo.owner, repo.name, version.path, version.commitSha)
+      const oldNote = notes.find((note) => note.path === historyBaseNote.path) || historyBaseNote
+      const restored = parseNoteFile(historyBaseNote.path, file.markdown, {
+        sha: oldNote.commitSha,
+        date: new Date().toISOString(),
+        fileSha: oldNote.fileSha,
+      })
+      const next = {
+        ...oldNote,
+        title: restored.title,
+        description: restored.description,
+        body: restored.body,
+        updatedDate: new Date().toISOString(),
+        dirty: false,
+        pendingSync: true,
+      }
+
+      notes = notes.map((note) => (note.path === oldNote.path ? next : note)).sort(sortByUpdatedDate)
+      persistDraft(next)
+      selectedPath = next.path
+      exitHistory()
+      status = `Restored ${version.commitSha.slice(0, 7)} locally. GitHub will sync on the next autosave.`
+    } catch (err) {
+      error = err.message
+    } finally {
+      loading = false
+    }
   }
 
   function updateSelected(patch) {
@@ -296,6 +335,7 @@ export function createNotesState() {
     get historyMode() { return historyMode },
     get historyVersions() { return historyVersions },
     get historyBaseNote() { return historyBaseNote },
+    get selectedHistoryCommitSha() { return selectedHistoryCommitSha },
     get hasDirtyDrafts() { return hasDirtyDrafts },
     get hasPendingGithubChanges() { return hasPendingGithubChanges },
     get loading() { return loading },
@@ -310,6 +350,7 @@ export function createNotesState() {
     copyToClipboard,
     showHistory,
     selectHistoryVersion,
+    restoreHistoryVersion,
     exitHistory,
     updateSelected,
     addBase64Image,

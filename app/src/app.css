@@ -308,11 +308,17 @@ input {
   gap: 6px;
 }
 
+.all-months {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
 .month-grid button {
   min-height: 34px;
 }
 
-.month-grid button.active {
+.month-grid button.active,
+.all-months.active {
   background: #173b70;
   color: #ffffff;
 }
@@ -470,9 +476,39 @@ input {
   font-weight: 800;
 }
 
-.markdown-editor {
+.markdown-editor-frame {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   flex: 1;
   min-height: 0;
+  background: #ffffff;
+}
+
+.markdown-editor-frame:not(.show-markdown-lines) {
+  display: flex;
+}
+
+.markdown-line-gutter {
+  overflow: hidden;
+  min-width: 48px;
+  padding: 22px 8px;
+  border-right: 1px solid #c7ccd6;
+  background: #eef1f6;
+  color: #6a7282;
+  font-size: 15px;
+  line-height: 24px;
+  text-align: right;
+  user-select: none;
+}
+
+.markdown-line-gutter span {
+  display: block;
+}
+
+.markdown-editor {
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
   padding: 22px;
   resize: none;
   border: 0;
@@ -548,12 +584,33 @@ input {
 .markdown-preview pre {
   overflow: auto;
   padding: 14px;
+  counter-reset: code-line;
 }
 
 .markdown-preview code {
   font-family:
     "SFMono-Regular", Menlo, Consolas, ui-monospace, monospace;
   font-size: 0.9em;
+}
+
+.markdown-preview .code-line {
+  display: block;
+  min-height: 1.45em;
+  white-space: pre;
+}
+
+.markdown-preview.show-code-lines .code-line {
+  counter-increment: code-line;
+}
+
+.markdown-preview.show-code-lines .code-line::before {
+  display: inline-block;
+  width: 32px;
+  margin-right: 12px;
+  color: #6a7282;
+  text-align: right;
+  content: counter(code-line);
+  user-select: none;
 }
 
 .markdown-preview table {
@@ -579,6 +636,11 @@ input {
   margin-left: -24px;
 }
 
+.markdown-preview.strike-tasks li:has(input[type="checkbox"]:checked) {
+  color: #6a7282;
+  text-decoration: line-through;
+}
+
 .markdown-preview input[type="checkbox"] {
   width: 16px;
   height: 16px;
@@ -600,6 +662,12 @@ input {
   padding: 14px;
   border: 1px solid #173b70;
   background: #f6f8fc;
+  text-align: center;
+}
+
+.mermaid svg {
+  display: block;
+  margin: 0 auto;
 }
 
 .editor-empty {

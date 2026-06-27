@@ -6,9 +6,9 @@ export function createCalendarState(notesState) {
   let selectedMonth = $state(monthValue(new Date()))
 
   const searchNotes = $derived(filterNotes(notesState.notes, search))
-  const filteredNotes = $derived(searchNotes.filter((note) => monthKey(note.updatedDate) === selectedMonth))
+  const filteredNotes = $derived(selectedMonth === 'all' ? searchNotes : searchNotes.filter((note) => monthKey(note.updatedDate) === selectedMonth))
   const groups = $derived(groupByDate(filteredNotes))
-  const currentMonth = $derived(monthYearLabel(`${selectedMonth}-01T00:00:00`))
+  const currentMonth = $derived(selectedMonth === 'all' ? 'All notes' : monthYearLabel(`${selectedMonth}-01T00:00:00`))
 
   function toggleVisualization() {
     visualization = visualization === 'calendar' ? 'constellation' : 'calendar'
@@ -19,7 +19,7 @@ export function createCalendarState(notesState) {
     set search(value) { search = value },
     get visualization() { return visualization },
     get selectedMonth() { return selectedMonth },
-    set selectedMonth(value) { selectedMonth = value || monthValue(new Date()) },
+    set selectedMonth(value) { selectedMonth = value || 'all' },
     get filteredNotes() { return filteredNotes },
     get searchNotes() { return searchNotes },
     get groups() { return groups },

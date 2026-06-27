@@ -6,13 +6,16 @@ const renderer = {
     if (String(token.lang || '').trim().toLowerCase() === 'mermaid') {
       return `<div class="mermaid" data-source="${escapeHtml(token.text)}">${escapeHtml(token.text)}</div>`
     }
+    if (['notit-table', 'csv-table'].includes(String(token.lang || '').trim().toLowerCase())) {
+      return renderCsvTable(token.text)
+    }
     if (String(token.lang || '').trim().toLowerCase().startsWith('notit-code')) {
       const title = codeBlockTitle(token.lang) || 'Code'
-      return `<details class="notit-code"><summary>${escapeHtml(title)}</summary><pre><code>${escapeHtml(token.text)}</code></pre></details>`
+      return `<details class="notit-code"><summary>${escapeHtml(title)}</summary><pre><code>${codeLines(token.text)}</code></pre></details>`
     }
 
     const lang = token.lang ? ` class="language-${escapeHtml(token.lang)}"` : ''
-    return `<pre><code${lang}>${escapeHtml(token.text)}</code></pre>`
+    return `<pre><code${lang}>${codeLines(token.text)}</code></pre>`
   },
 }
 
@@ -126,6 +129,31 @@ function splitFrontmatter(markdown) {
 function codeBlockTitle(lang) {
   const match = String(lang || '').match(/title=(?:"([^"]+)"|'([^']+)'|([^ ]+))/)
   return match?.[1] || match?.[2] || match?.[3] || ''
+}
+
+function codeLines(value) {
+  return String(value || '')
+    .split('\n')
+    .map((line) => `<span class="code-line">${escapeHtml(line) || ' '}</span>`)
+    .join('')
+}
+
+function renderCsvTable(value) {
+  const rows = String(value || '')
+    .split(/\n|;/)
+    .map((row) => row.trim())
+    .filter(Boolean)
+    .map((row) => row.split(',').map((cell) => cell.trim()))
+
+  if (!rows.length) return ''
+
+  const [headers, ...body] = rows
+  return [
+    '<table class="notit-table-v2">',
+    `<thead><tr>${headers.map((cell) => `<th>${escapeHtml(cell)}</th>`).join('')}</tr></thead>`,
+    `<tbody>${body.map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('')}</tbody>`,
+    '</table>',
+  ].join('')
 }
 
 function quoteYaml(value) {

@@ -128,7 +128,7 @@ export class GitHubClient {
   }
 
   async listNoteHistory(owner, repo, path) {
-    const commits = await this.request(`/repos/${owner}/${repo}/commits?sha=master&path=${encodeURIComponent(path)}&per_page=30`)
+    const commits = await this.request(`/repos/${owner}/${repo}/commits?sha=master&path=${encodeURIComponent(path)}&per_page=100`)
     return commits.map((commit) => ({
       path,
       commitSha: commit.sha,

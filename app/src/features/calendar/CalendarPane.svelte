@@ -10,6 +10,7 @@
   export let historyMode = false
   export let historyVersions = []
   export let historyBaseNote = null
+  export let selectedHistoryCommitSha = ''
   export let selectedPath = ''
   export let onToggleVisualization = () => {}
   export let onSelectMonth = () => {}
@@ -17,6 +18,7 @@
   export let onDelete = () => {}
   export let onHistory = () => {}
   export let onSelectHistory = () => {}
+  export let onRestoreHistory = () => {}
   export let onExitHistory = () => {}
 
   let listElement
@@ -24,21 +26,21 @@
   let pickerYear = new Date().getFullYear()
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-  $: if (selectedMonth && listElement) scrollToMonth(selectedMonth)
-  $: if (selectedMonth) pickerYear = Number(selectedMonth.slice(0, 4))
-  $: yearOptions = buildYearOptions(notes, selectedMonth)
+  $: if (selectedMonth && selectedMonth !== 'all' && listElement) scrollToMonth(selectedMonth)
+  $: if (selectedMonth && selectedMonth !== 'all') pickerYear = Number(selectedMonth.slice(0, 4))
+  $: yearOptions = buildYearOptions(notes, selectedMonth, pickerYear)
 
   function openMonthPicker() {
     pickerOpen = !pickerOpen
   }
 
-  function buildYearOptions(items, currentMonth) {
+  function buildYearOptions(items, currentMonth, currentPickerYear) {
     const years = items
       .map((note) => new Date(note.updatedDate).getFullYear())
       .filter((year) => Number.isFinite(year))
     const currentYear = Number(currentMonth?.slice(0, 4)) || new Date().getFullYear()
-    const min = Math.min(currentYear - 1, ...years)
-    const max = Math.max(currentYear + 1, ...years)
+    const min = Math.min(currentYear - 1, currentPickerYear - 1, ...years)
+    const max = Math.max(currentYear + 1, currentPickerYear + 1, ...years)
 
     return Array.from({ length: max - min + 1 }, (_, index) => min + index)
   }
@@ -77,6 +79,9 @@
             </select>
             <button type="button" onclick={() => (pickerYear += 1)}>&gt;</button>
           </div>
+          <button class:active={selectedMonth === 'all'} class="all-months" type="button" onclick={() => { pickerOpen = false; onSelectMonth('all') }}>
+            All
+          </button>
           <div class="month-grid">
             {#each monthNames as name, index}
               <button
@@ -102,11 +107,14 @@
       <section class="date-group">
         <h2>Previous commits</h2>
         {#each historyVersions as version}
-          <article>
+          <article class:active={version.commitSha === selectedHistoryCommitSha}>
             <button class="note-select" type="button" onclick={() => onSelectHistory(version)}>
-              <strong>{version.date ? new Date(version.date).toLocaleString() : version.commitSha.slice(0, 7)}</strong>
+              <strong>{version.date ? new Date(version.date).toLocaleString('en-GB') : version.commitSha.slice(0, 7)}</strong>
               <span>{version.message || version.commitSha}</span>
             </button>
+            <div class="row-actions">
+              <button type="button" title="Restore this version" onclick={() => onRestoreHistory(version)}>RESTORE</button>
+            </div>
           </article>
         {/each}
       </section>
@@ -116,7 +124,7 @@
   {:else}
     <div class="calendar-list" bind:this={listElement}>
       {#if !Object.keys(groups).length}
-        <div class="empty-state">No notes in this month.</div>
+        <div class="empty-state">{selectedMonth === 'all' ? 'No notes yet.' : 'No notes in this month.'}</div>
       {/if}
 
       {#each Object.entries(groups) as [date, dateNotes]}

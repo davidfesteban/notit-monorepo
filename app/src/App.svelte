@@ -80,6 +80,18 @@
         <input type="checkbox" checked={app.showSyncCountdown} onchange={(event) => app.setShowSyncCountdown(event.currentTarget.checked)} />
         <span>Show sync countdown</span>
       </label>
+      <label class="setting-row">
+        <input type="checkbox" checked={app.showCodeLineNumbers} onchange={(event) => app.setShowCodeLineNumbers(event.currentTarget.checked)} />
+        <span>Code line numbers</span>
+      </label>
+      <label class="setting-row">
+        <input type="checkbox" checked={app.strikeCompletedTasks} onchange={(event) => app.setStrikeCompletedTasks(event.currentTarget.checked)} />
+        <span>Strike completed tasks</span>
+      </label>
+      <label class="setting-row">
+        <input type="checkbox" checked={app.showMarkdownLineNumbers} onchange={(event) => app.setShowMarkdownLineNumbers(event.currentTarget.checked)} />
+        <span>Markdown line numbers</span>
+      </label>
     </section>
   {/if}
 
@@ -97,6 +109,7 @@
       historyMode={app.notes.historyMode}
       historyVersions={app.notes.historyVersions}
       historyBaseNote={app.notes.historyBaseNote}
+      selectedHistoryCommitSha={app.notes.selectedHistoryCommitSha}
       selectedPath={app.notes.selectedPath}
       onToggleVisualization={app.calendar.toggleVisualization}
       onSelectMonth={app.selectMonth}
@@ -104,6 +117,7 @@
       onDelete={(note) => app.notes.deleteNote(app.repo.client, app.repo.repo, note)}
       onHistory={(note) => app.notes.showHistory(app.repo.client, app.repo.repo, note)}
       onSelectHistory={(version) => app.notes.selectHistoryVersion(app.repo.client, app.repo.repo, version)}
+      onRestoreHistory={(version) => app.notes.restoreHistoryVersion(app.repo.client, app.repo.repo, version)}
       onExitHistory={app.notes.exitHistory}
     />
 
@@ -115,6 +129,9 @@
       renderedHtml={app.editor.renderedHtml}
       loading={app.loading}
       readOnly={app.notes.historyMode && !!app.notes.selectedNote}
+      showCodeLineNumbers={app.showCodeLineNumbers}
+      strikeCompletedTasks={app.strikeCompletedTasks}
+      showMarkdownLineNumbers={app.showMarkdownLineNumbers}
       repo={app.repo.repo}
       onMode={(mode) => (app.editor.mode = mode)}
       onInsert={app.editor.insertMarkdown}

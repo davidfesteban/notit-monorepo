@@ -15,6 +15,9 @@ export function createApp() {
   let autosaveEnabled = $state(session.settings?.autosaveEnabled !== false)
   let autosaveMinutes = $state(session.settings?.autosaveMinutes || 5)
   let showSyncCountdown = $state(session.settings?.showSyncCountdown !== false)
+  let showCodeLineNumbers = $state(session.settings?.showCodeLineNumbers !== false)
+  let strikeCompletedTasks = $state(session.settings?.strikeCompletedTasks !== false)
+  let showMarkdownLineNumbers = $state(session.settings?.showMarkdownLineNumbers !== false)
   let syncRemainingSeconds = $state((session.settings?.autosaveMinutes || 5) * 60)
   let autosaveTimer = null
   let syncing = false
@@ -42,20 +45,46 @@ export function createApp() {
 
   function setAutosaveEnabled(value) {
     autosaveEnabled = value
-    saveSettings({ autosaveEnabled, autosaveMinutes, showSyncCountdown })
+    persistSettings()
     startAutosave()
   }
 
   function setAutosaveMinutes(value) {
     autosaveMinutes = Number(value) === 10 ? 10 : 5
     syncRemainingSeconds = autosaveMinutes * 60
-    saveSettings({ autosaveEnabled, autosaveMinutes, showSyncCountdown })
+    persistSettings()
     startAutosave()
   }
 
   function setShowSyncCountdown(value) {
     showSyncCountdown = value
-    saveSettings({ autosaveEnabled, autosaveMinutes, showSyncCountdown })
+    persistSettings()
+  }
+
+  function setShowCodeLineNumbers(value) {
+    showCodeLineNumbers = value
+    persistSettings()
+  }
+
+  function setStrikeCompletedTasks(value) {
+    strikeCompletedTasks = value
+    persistSettings()
+  }
+
+  function setShowMarkdownLineNumbers(value) {
+    showMarkdownLineNumbers = value
+    persistSettings()
+  }
+
+  function persistSettings() {
+    saveSettings({
+      autosaveEnabled,
+      autosaveMinutes,
+      showSyncCountdown,
+      showCodeLineNumbers,
+      strikeCompletedTasks,
+      showMarkdownLineNumbers,
+    })
   }
 
   function startAutosave() {
@@ -133,11 +162,17 @@ export function createApp() {
     get autosaveEnabled() { return autosaveEnabled },
     get autosaveMinutes() { return autosaveMinutes },
     get showSyncCountdown() { return showSyncCountdown },
+    get showCodeLineNumbers() { return showCodeLineNumbers },
+    get strikeCompletedTasks() { return strikeCompletedTasks },
+    get showMarkdownLineNumbers() { return showMarkdownLineNumbers },
     get syncStatus() { return notes.hasPendingGithubChanges ? 'Unsync' : 'Synced' },
     get syncCountdown() { return formatSyncCountdown() },
     setAutosaveEnabled,
     setAutosaveMinutes,
     setShowSyncCountdown,
+    setShowCodeLineNumbers,
+    setStrikeCompletedTasks,
+    setShowMarkdownLineNumbers,
     forceSync,
     selectMonth,
     copyDeviceCode,
