@@ -1,20 +1,66 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
   <title id="title">Notit</title>
-  <desc id="desc">Free private GitHub notes with ChatGPT integration, no backend, and no subscription.</desc>
+  <desc id="desc">Notit is a free private GitHub based Markdown notes app with ChatGPT integration.</desc>
   <rect width="1200" height="630" fill="#050505"/>
-  <g stroke="#111827" stroke-width="1">
-    <path d="M0 70h1200M0 140h1200M0 210h1200M0 280h1200M0 350h1200M0 420h1200M0 490h1200M0 560h1200"/>
-    <path d="M80 0v630M160 0v630M240 0v630M320 0v630M400 0v630M480 0v630M560 0v630M640 0v630M720 0v630M800 0v630M880 0v630M960 0v630M1040 0v630M1120 0v630"/>
+
+  <g stroke="#181818" stroke-width="1">
+    <path d="M0 72h1200M0 144h1200M0 216h1200M0 288h1200M0 360h1200M0 432h1200M0 504h1200M0 576h1200"/>
+    <path d="M72 0v630M144 0v630M216 0v630M288 0v630M360 0v630M432 0v630M504 0v630M576 0v630M648 0v630M720 0v630M792 0v630M864 0v630M936 0v630M1008 0v630M1080 0v630M1152 0v630"/>
   </g>
-  <rect x="72" y="72" width="1056" height="486" fill="#070707" stroke="#f4f4f4" stroke-width="3"/>
-  <rect x="90" y="90" width="1056" height="486" fill="none" stroke="#2d5cff" stroke-width="3"/>
-  <rect x="112" y="112" width="76" height="76" fill="#fff" stroke="#f4f4f4" stroke-width="2"/>
-  <rect x="128" y="128" width="44" height="10" fill="#050505"/>
-  <rect x="128" y="148" width="44" height="10" fill="#050505"/>
-  <rect x="128" y="168" width="26" height="10" fill="#050505"/>
-  <text x="112" y="248" fill="#9b9b9b" font-family="Menlo, Monaco, Consolas, monospace" font-size="28" letter-spacing="3">OPEN SOURCE / GITHUB NOTES / CLIENT SIDE</text>
-  <text x="112" y="386" fill="#2d5cff" font-family="Menlo, Monaco, Consolas, monospace" font-size="142" font-weight="800">Notit</text>
-  <text x="104" y="378" fill="#ffffff" font-family="Menlo, Monaco, Consolas, monospace" font-size="142" font-weight="800">Notit</text>
-  <text x="112" y="464" fill="#ffffff" font-family="Menlo, Monaco, Consolas, monospace" font-size="36" font-weight="700">Free, private GitHub notes.</text>
-  <text x="112" y="518" fill="#d7d7d7" font-family="Menlo, Monaco, Consolas, monospace" font-size="28">No backend. No subscription. ChatGPT integrated.</text>
+
+  <rect x="54" y="54" width="1092" height="522" fill="#080808" stroke="#f4f4f4" stroke-width="3"/>
+  <rect x="70" y="70" width="1092" height="522" fill="none" stroke="#2d5cff" stroke-width="3"/>
+
+  <g transform="translate(106 104)">
+    <rect x="0" y="0" width="108" height="108" fill="#ffffff" stroke="#f4f4f4" stroke-width="3"/>
+    <rect x="24" y="28" width="60" height="12" fill="#050505"/>
+    <rect x="24" y="50" width="60" height="12" fill="#050505"/>
+    <rect x="24" y="72" width="36" height="12" fill="#050505"/>
+  </g>
+
+  <text x="244" y="135" fill="#9b9b9b" font-family="Menlo, Monaco, Consolas, monospace" font-size="26" letter-spacing="2">OPEN SOURCE / GITHUB NOTES / CLIENT SIDE</text>
+  <text x="244" y="240" fill="#2d5cff" font-family="Menlo, Monaco, Consolas, monospace" font-size="96" font-weight="800">Notit</text>
+  <text x="238" y="234" fill="#ffffff" font-family="Menlo, Monaco, Consolas, monospace" font-size="96" font-weight="800">Notit</text>
+  <text x="106" y="316" fill="#ffffff" font-family="Menlo, Monaco, Consolas, monospace" font-size="34" font-weight="700">Free, private GitHub notes.</text>
+  <text x="106" y="362" fill="#cfcfcf" font-family="Menlo, Monaco, Consolas, monospace" font-size="25">No backend. No subscription.</text>
+  <text x="106" y="400" fill="#cfcfcf" font-family="Menlo, Monaco, Consolas, monospace" font-size="25">ChatGPT integrated.</text>
+
+  <g transform="translate(106 444)">
+    <rect x="0" y="0" width="132" height="44" fill="#ffffff" stroke="#ffffff" stroke-width="2"/>
+    <text x="18" y="30" fill="#050505" font-family="Menlo, Monaco, Consolas, monospace" font-size="20" font-weight="700">PRIVATE</text>
+    <rect x="152" y="0" width="176" height="44" fill="#050505" stroke="#ffffff" stroke-width="2"/>
+    <text x="174" y="30" fill="#ffffff" font-family="Menlo, Monaco, Consolas, monospace" font-size="20" font-weight="700">GITHUB SYNC</text>
+    <rect x="348" y="0" width="126" height="44" fill="#050505" stroke="#2d5cff" stroke-width="2"/>
+    <text x="370" y="30" fill="#ffffff" font-family="Menlo, Monaco, Consolas, monospace" font-size="20" font-weight="700">AI GPT</text>
+  </g>
+
+  <g transform="translate(694 226)">
+    <rect x="0" y="0" width="382" height="270" fill="#f8f9fb" stroke="#ffffff" stroke-width="4"/>
+    <rect x="0" y="0" width="382" height="40" fill="#d7dbe3" stroke="#171b24" stroke-width="2"/>
+    <text x="18" y="27" fill="#171b24" font-family="Menlo, Monaco, Consolas, monospace" font-size="16" font-weight="700">GitHub</text>
+    <text x="118" y="27" fill="#171b24" font-family="Menlo, Monaco, Consolas, monospace" font-size="16" font-weight="700">AI</text>
+    <text x="166" y="27" fill="#171b24" font-family="Menlo, Monaco, Consolas, monospace" font-size="16" font-weight="700">Setting</text>
+    <rect x="278" y="10" width="84" height="20" fill="#ffffff" stroke="#171b24"/>
+
+    <rect x="0" y="40" width="132" height="230" fill="#eef1f6" stroke="#171b24" stroke-width="2"/>
+    <text x="16" y="72" fill="#171b24" font-family="Menlo, Monaco, Consolas, monospace" font-size="15" font-weight="700">JUN 2026</text>
+    <line x1="16" y1="92" x2="114" y2="92" stroke="#171b24" stroke-dasharray="4 4"/>
+    <text x="16" y="120" fill="#171b24" font-family="Menlo, Monaco, Consolas, monospace" font-size="14" font-weight="700">Launch note</text>
+    <text x="16" y="142" fill="#4d5565" font-family="Menlo, Monaco, Consolas, monospace" font-size="12">No backend.</text>
+    <text x="16" y="160" fill="#4d5565" font-family="Menlo, Monaco, Consolas, monospace" font-size="12">Git notes.</text>
+    <rect x="12" y="184" width="108" height="54" fill="#ffffff" stroke="#173b70"/>
+    <text x="24" y="214" fill="#171b24" font-family="Menlo, Monaco, Consolas, monospace" font-size="13" font-weight="700">History diff</text>
+
+    <rect x="132" y="40" width="250" height="230" fill="#ffffff" stroke="#171b24" stroke-width="2"/>
+    <rect x="132" y="40" width="250" height="40" fill="#d7dbe3" stroke="#171b24" stroke-width="2"/>
+    <rect x="148" y="50" width="64" height="20" fill="#173b70"/>
+    <text x="158" y="65" fill="#ffffff" font-family="Menlo, Monaco, Consolas, monospace" font-size="12" font-weight="700">Visual</text>
+    <text x="228" y="65" fill="#171b24" font-family="Menlo, Monaco, Consolas, monospace" font-size="12" font-weight="700">Markdown</text>
+
+    <text x="156" y="120" fill="#171b24" font-family="Menlo, Monaco, Consolas, monospace" font-size="23" font-weight="800">AI launch note</text>
+    <text x="156" y="154" fill="#333a48" font-family="Menlo, Monaco, Consolas, monospace" font-size="14">- [ ] Ship Mac app</text>
+    <text x="156" y="178" fill="#333a48" font-family="Menlo, Monaco, Consolas, monospace" font-size="14">- [ ] Submit iOS build</text>
+    <rect x="156" y="200" width="198" height="48" fill="#eef1f6" stroke="#2d5cff" stroke-width="2"/>
+    <text x="174" y="230" fill="#173b70" font-family="Menlo, Monaco, Consolas, monospace" font-size="15" font-weight="700">Notit - GitHub - GPT</text>
+  </g>
 </svg>
