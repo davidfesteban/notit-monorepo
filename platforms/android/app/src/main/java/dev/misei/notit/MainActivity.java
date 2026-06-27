@@ -1,4 +1,4 @@
-package com.davidfesteban.notit;
+package dev.misei.notit;
 
 import com.getcapacitor.BridgeActivity;
 

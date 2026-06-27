@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.davidfesteban.notit"
+    namespace = "dev.misei.notit"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.davidfesteban.notit"
+        applicationId "dev.misei.notit"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

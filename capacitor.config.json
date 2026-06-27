@@ -1,5 +1,5 @@
 {
-  "appId": "com.davidfesteban.notit",
+  "appId": "dev.misei.notit",
   "appName": "Notit",
   "webDir": "app/dist",
   "ios": {

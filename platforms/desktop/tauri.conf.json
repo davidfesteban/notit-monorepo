@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Notit",
   "version": "0.1.0",
-  "identifier": "com.davidfesteban.notit",
+  "identifier": "dev.misei.notit",
   "build": {
     "frontendDist": "../../app/dist",
     "devUrl": "http://localhost:5173",
