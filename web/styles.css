@@ -55,7 +55,8 @@ a {
 .eyebrow,
 .links,
 .try-head,
-.tagline {
+.tagline,
+.legal {
   font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
 }
 
@@ -293,6 +294,60 @@ h1 {
   background: #ffffff;
 }
 
+.legal {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 24px;
+  padding: 26px 0 34px;
+  border-top: 1px solid #2a2a2a;
+  color: #d7d7d7;
+}
+
+.legal h2,
+.legal p {
+  margin: 0;
+}
+
+.legal h2 {
+  margin-top: 8px;
+  color: #ffffff;
+  font-size: clamp(20px, 2.6vw, 34px);
+  line-height: 1;
+}
+
+.legal > div > p:not(.eyebrow) {
+  max-width: 560px;
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.legal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.legal-grid article {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #3a3a3a;
+  background: #080808;
+}
+
+.legal-grid strong {
+  color: #ffffff;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.legal-grid p {
+  color: #cfcfcf;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .links {
   display: flex;
   flex-wrap: wrap;
@@ -354,5 +409,10 @@ h1 {
   .app-frame {
     height: 680px;
     min-height: 680px;
+  }
+
+  .legal,
+  .legal-grid {
+    grid-template-columns: 1fr;
   }
 }
