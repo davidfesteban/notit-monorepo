@@ -1,3 +1,5 @@
+import { Capacitor, CapacitorHttp } from '@capacitor/core'
+
 const apiBase = 'https://api.github.com'
 const oauthBase = import.meta.env.DEV ? '/github-oauth' : 'https://github.com'
 
@@ -234,13 +236,33 @@ export async function pollDeviceToken(clientId, deviceCode) {
 }
 
 async function oauthFetch(path, options) {
+  if (Capacitor.isNativePlatform()) {
+    try {
+      const response = await CapacitorHttp.request({
+        url: `${oauthBase}${path}`,
+        method: options.method || 'GET',
+        headers: options.headers,
+        data: options.body ? JSON.parse(options.body) : undefined,
+        responseType: 'json',
+      })
+
+      return {
+        ok: response.status >= 200 && response.status < 300,
+        status: response.status,
+        json: async () => response.data || {},
+      }
+    } catch (error) {
+      throw new Error(`GitHub login request failed through the app shell: ${error.message}`)
+    }
+  }
+
   try {
     return await fetch(`${oauthBase}${path}`, options)
   } catch (error) {
     throw new Error(
       import.meta.env.DEV
         ? `GitHub login request failed through the local dev proxy: ${error.message}`
-        : `GitHub login request failed. In a plain browser build, GitHub device-login endpoints may be blocked by CORS; run through the app shell or a trusted proxy.`,
+        : `GitHub login request failed. GitHub device-login endpoints are blocked by browser CORS in plain web builds. Use the installed app or a trusted proxy.`,
     )
   }
 }
