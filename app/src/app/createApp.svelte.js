@@ -221,6 +221,13 @@ export function createApp({ demo = false } = {}) {
     startDemo()
   }
 
+  function closeTransientPanels(event) {
+    if (event?.target?.closest?.('.topbar, .repo-panel, .notice, .modal-backdrop')) return
+    layout.repoOpen = false
+    layout.aiOpen = false
+    layout.settingsOpen = false
+  }
+
   function runDemoStep() {
     const steps = [
       resetDemo,
@@ -326,6 +333,7 @@ export function createApp({ demo = false } = {}) {
     stopDemo,
     pauseDemo,
     resumeDemoFromEmptySpace,
+    closeTransientPanels,
     stopAutosave,
     protectUnload,
     useRepo,

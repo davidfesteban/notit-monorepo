@@ -26,10 +26,10 @@ npm run ios
 npm run android
 ```
 
-Create a local `app/.env` from `app/.env.example` with the GitHub client id:
+The app ships with the public GitHub OAuth client id in `app/.env`:
 
 ```sh
-VITE_GITHUB_CLIENT_ID=your_client_id
+VITE_GITHUB_CLIENT_ID=...
 ```
 
 ## Local MCP

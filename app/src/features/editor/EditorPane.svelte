@@ -18,6 +18,8 @@
 
   let textareaElement
   let lineGutterElement
+  let toolMenuElement
+  let toolMenuOpen = false
 
   function insert(before, after = '', placeholder = '') {
     const selection =
@@ -72,9 +74,14 @@
   function syncEditorScroll() {
     if (lineGutterElement && textareaElement) lineGutterElement.scrollTop = textareaElement.scrollTop
   }
+
+  function closeToolMenuOnOutsidePointer(event) {
+    if (!toolMenuOpen || toolMenuElement?.contains(event.target)) return
+    toolMenuOpen = false
+  }
 </script>
 
-<svelte:window onpaste={handlePaste} />
+<svelte:window onpaste={handlePaste} onpointerdown={closeToolMenuOnOutsidePointer} />
 
 <section class="editor-pane">
   <header class="editor-toolbar">
@@ -95,7 +102,7 @@
       <button type="button" onclick={() => insert('```notit-code title=\"Code\"\n', '\n```', 'console.log(\"later\")')} disabled={readOnly}>Code</button>
     </div>
 
-    <details class="tool-menu">
+    <details class="tool-menu" bind:this={toolMenuElement} bind:open={toolMenuOpen}>
       <summary>Tools</summary>
       <div class="tool-menu-items">
         <button type="button" onclick={() => insert('# ', '', 'Heading')} disabled={readOnly}>H1</button>

@@ -44,7 +44,7 @@ Required value:
 VITE_GITHUB_CLIENT_ID=...
 ```
 
-Do not commit `app/.env`; keep `app/.env.example` as the tracked template.
+`app/.env` is intentionally tracked so distributed builds use the Notit GitHub OAuth app.
 
 ## Notes For Agents
 

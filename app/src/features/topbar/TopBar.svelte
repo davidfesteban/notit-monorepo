@@ -17,6 +17,7 @@
   export let onToggleSettings = () => {}
 
   let menuOpen = false
+  let menuElement
 
   function runMenuAction(action) {
     menuOpen = false
@@ -28,7 +29,14 @@
     onHeaderAction()
     action()
   }
+
+  function closeMenuOnOutsidePointer(event) {
+    if (!menuOpen || menuElement?.contains(event.target)) return
+    menuOpen = false
+  }
 </script>
+
+<svelte:window onpointerdown={closeMenuOnOutsidePointer} />
 
 <header class:left-collapsed={leftCollapsed} class="topbar">
   {#if !leftCollapsed}
@@ -53,7 +61,7 @@
     </button>
 
     {#if isMobile}
-      <details class="mobile-menu" bind:open={menuOpen}>
+      <details class="mobile-menu" bind:this={menuElement} bind:open={menuOpen}>
         <summary>Menu</summary>
         <div class="mobile-menu-items">
           <button type="button" onclick={() => runMenuAction(onConnect)} disabled={loading || token}>

@@ -57,6 +57,31 @@ test('exposes app settings from the phone menu', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Setting', exact: true }).click()
   await expect(page.getByText('Theme')).toBeVisible()
+  await expect(page.locator('.settings-panel .setting-row').nth(1)).toContainText('Theme')
+  await expect(page.locator('.settings-panel')).toHaveCSS('overflow-x', 'auto')
+})
+
+test('closes open menus and panels when clicking elsewhere', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  const mobileMenu = page.locator('.mobile-menu')
+  await mobileMenu.locator('summary').click()
+  await expect(mobileMenu).toHaveAttribute('open', '')
+  await page.locator('.editor-pane').click({ position: { x: 20, y: 20 } })
+  await expect(mobileMenu).not.toHaveAttribute('open', '')
+
+  const toolMenu = page.locator('.tool-menu')
+  await toolMenu.locator('summary').click()
+  await expect(toolMenu).toHaveAttribute('open', '')
+  await page.locator('.editor-pane').click({ position: { x: 20, y: 160 } })
+  await expect(toolMenu).not.toHaveAttribute('open', '')
+
+  await page.locator('.mobile-menu summary').click()
+  await page.getByRole('button', { name: 'Setting', exact: true }).click()
+  await expect(page.locator('.settings-panel')).toBeVisible()
+  await page.locator('.editor-pane').click({ position: { x: 20, y: 20 } })
+  await expect(page.locator('.settings-panel')).toHaveCount(0)
 })
 
 test('demo mode only pauses from header controls and restarts from empty workspace', async ({ page }) => {

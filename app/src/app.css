@@ -451,6 +451,11 @@ input {
   font: inherit;
 }
 
+.settings-panel {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .status-line {
   min-height: 36px;
   color: #173b70;
@@ -816,6 +821,19 @@ input {
 
   .mobile-menu {
     display: block;
+  }
+
+  .settings-panel {
+    align-items: stretch;
+    gap: 8px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .settings-panel .setting-row {
+    flex: 0 0 min(76vw, 290px);
+    scroll-snap-align: start;
   }
 
   .sync-pill {

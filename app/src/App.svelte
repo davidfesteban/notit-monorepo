@@ -9,6 +9,11 @@
 
   const app = createApp({ demo: new URLSearchParams(window.location.search).get('demo') === '1' })
 
+  function handleShellPointerDown(event) {
+    app.closeTransientPanels(event)
+    app.resumeDemoFromEmptySpace(event)
+  }
+
   onMount(() => {
     app.initialize()
     app.syncLayoutToViewport()
@@ -25,7 +30,7 @@
   })
 </script>
 
-<main class:left-collapsed={app.layout.leftCollapsed} class={`app-shell theme-${app.theme}`} style={`--left: ${app.layout.split}%`} onpointerdown={app.resumeDemoFromEmptySpace}>
+<main class:left-collapsed={app.layout.leftCollapsed} class={`app-shell theme-${app.theme}`} style={`--left: ${app.layout.split}%`} onpointerdown={handleShellPointerDown}>
   <TopBar
     token={app.repo.token}
     user={app.repo.user}
@@ -72,7 +77,7 @@
   {/if}
 
   {#if app.layout.settingsOpen}
-    <section class="repo-panel">
+    <section class="repo-panel settings-panel">
       <strong>Setting</strong>
       <label class="setting-row">
         <input type="checkbox" checked={app.autosaveEnabled} onchange={(event) => app.setAutosaveEnabled(event.currentTarget.checked)} />
@@ -83,8 +88,12 @@
         </select>
       </label>
       <label class="setting-row">
-        <input type="checkbox" checked={app.showSyncCountdown} onchange={(event) => app.setShowSyncCountdown(event.currentTarget.checked)} />
-        <span>Show sync countdown</span>
+        <span>Theme</span>
+        <select onchange={(event) => app.setTheme(event.currentTarget.value)}>
+          <option value="retro" selected={app.theme === 'retro'}>90s Notit</option>
+          <option value="notit-dark" selected={app.theme === 'notit-dark'}>Notit Dark</option>
+          <option value="zed-slim" selected={app.theme === 'zed-slim'}>Zed Slim</option>
+        </select>
       </label>
       <label class="setting-row">
         <input type="checkbox" checked={app.showCodeLineNumbers} onchange={(event) => app.setShowCodeLineNumbers(event.currentTarget.checked)} />
@@ -99,12 +108,8 @@
         <span>Markdown line numbers</span>
       </label>
       <label class="setting-row">
-        <span>Theme</span>
-        <select onchange={(event) => app.setTheme(event.currentTarget.value)}>
-          <option value="retro" selected={app.theme === 'retro'}>90s Notit</option>
-          <option value="notit-dark" selected={app.theme === 'notit-dark'}>Notit Dark</option>
-          <option value="zed-slim" selected={app.theme === 'zed-slim'}>Zed Slim</option>
-        </select>
+        <input type="checkbox" checked={app.showSyncCountdown} onchange={(event) => app.setShowSyncCountdown(event.currentTarget.checked)} />
+        <span>Show sync countdown</span>
       </label>
     </section>
   {/if}
