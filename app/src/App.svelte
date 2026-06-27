@@ -33,6 +33,8 @@
     syncCountdown={app.syncCountdown}
     showSyncCountdown={app.showSyncCountdown}
     leftCollapsed={app.layout.leftCollapsed}
+    isMobile={app.layout.isMobile}
+    mobileView={app.layout.mobileView}
     onToggleLeft={app.toggleLeftPanel}
     onConnect={app.repo.connect}
     onForceSync={app.forceSync}
@@ -110,8 +112,13 @@
     <section class:error={app.error} class="status-line">{app.error || app.status}</section>
   {/if}
 
-  <section class:left-collapsed={app.layout.leftCollapsed} class="workspace">
-    {#if !app.layout.leftCollapsed}
+  <section
+    class:left-collapsed={app.layout.leftCollapsed}
+    class:mobile-list={app.layout.isMobile && app.layout.mobileView === 'list'}
+    class:mobile-editor={app.layout.isMobile && app.layout.mobileView === 'editor'}
+    class="workspace"
+  >
+    {#if !app.layout.leftCollapsed || (app.layout.isMobile && app.layout.mobileView === 'list')}
       <CalendarPane
         visualization={app.calendar.visualization}
         monthLabel={app.calendar.monthLabel}
@@ -125,34 +132,38 @@
         selectedPath={app.notes.selectedPath}
         onToggleVisualization={app.calendar.toggleVisualization}
         onSelectMonth={app.selectMonth}
-        onSelect={(path) => (app.notes.selectedPath = path)}
+        onSelect={app.selectNote}
         onDelete={(note) => app.notes.deleteNote(app.repo.client, app.repo.repo, note)}
         onHistory={(note) => app.notes.showHistory(app.repo.client, app.repo.repo, note)}
-        onSelectHistory={(version) => app.notes.selectHistoryVersion(app.repo.client, app.repo.repo, version)}
+        onSelectHistory={app.selectHistoryVersion}
         onRestoreHistory={(version) => app.notes.restoreHistoryVersion(app.repo.client, app.repo.repo, version)}
         onExitHistory={app.notes.exitHistory}
       />
 
-      <button class="splitter" type="button" aria-label="Resize columns" onpointerdown={app.layout.beginResize}></button>
+      {#if !app.layout.isMobile}
+        <button class="splitter" type="button" aria-label="Resize columns" onpointerdown={app.layout.beginResize}></button>
+      {/if}
     {/if}
 
-    <EditorPane
-      selectedNote={app.notes.selectedNote}
-      editorMode={app.editor.mode}
-      renderedHtml={app.editor.renderedHtml}
-      loading={app.loading}
-      readOnly={app.notes.historyMode && !!app.notes.selectedNote}
-      showCodeLineNumbers={app.showCodeLineNumbers}
-      strikeCompletedTasks={app.strikeCompletedTasks}
-      showMarkdownLineNumbers={app.showMarkdownLineNumbers}
-      repo={app.repo.repo}
-      onMode={(mode) => (app.editor.mode = mode)}
-      onInsert={app.editor.insertMarkdown}
-      onToggleTask={app.editor.toggleTaskAt}
-      onPasteFiles={app.editor.pasteFiles}
-      onSave={app.notes.saveSelected}
-      onCreate={app.notes.createNote}
-      onUpdateNote={app.notes.updateSelected}
-    />
+    {#if !app.layout.isMobile || app.layout.mobileView === 'editor'}
+      <EditorPane
+        selectedNote={app.notes.selectedNote}
+        editorMode={app.editor.mode}
+        renderedHtml={app.editor.renderedHtml}
+        loading={app.loading}
+        readOnly={app.notes.historyMode && !!app.notes.selectedNote}
+        showCodeLineNumbers={app.showCodeLineNumbers}
+        strikeCompletedTasks={app.strikeCompletedTasks}
+        showMarkdownLineNumbers={app.showMarkdownLineNumbers}
+        repo={app.repo.repo}
+        onMode={(mode) => (app.editor.mode = mode)}
+        onInsert={app.editor.insertMarkdown}
+        onToggleTask={app.editor.toggleTaskAt}
+        onPasteFiles={app.editor.pasteFiles}
+        onSave={app.notes.saveSelected}
+        onCreate={app.createNote}
+        onUpdateNote={app.notes.updateSelected}
+      />
+    {/if}
   </section>
 </main>

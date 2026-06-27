@@ -7,6 +7,8 @@
   export let syncCountdown = ''
   export let showSyncCountdown = true
   export let leftCollapsed = false
+  export let isMobile = false
+  export let mobileView = 'editor'
   export let onToggleLeft = () => {}
   export let onConnect = () => {}
   export let onForceSync = () => {}
@@ -30,8 +32,12 @@
   {/if}
 
   <div class="topbar-main">
-    <button class:active={leftCollapsed} class="focus-toggle top-action" type="button" title="Toggle note list" onclick={onToggleLeft}>
-      {leftCollapsed ? 'Unfocus' : 'Focus'}
+    <button class:active={leftCollapsed || isMobile} class="focus-toggle top-action" type="button" title="Toggle note list" onclick={onToggleLeft}>
+      {#if isMobile}
+        {mobileView === 'list' ? 'Editor' : 'Notes'}
+      {:else}
+        {leftCollapsed ? 'Unfocus' : 'Focus'}
+      {/if}
     </button>
 
     <div class="topbar-right">

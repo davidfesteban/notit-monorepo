@@ -738,9 +738,112 @@ input {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .calendar-pane,
   .splitter {
     display: none;
+  }
+
+  .calendar-pane {
+    display: flex;
+    width: 100%;
+    border-right: 0;
+  }
+
+  .workspace.mobile-editor .calendar-pane,
+  .workspace.mobile-list .editor-pane {
+    display: none;
+  }
+
+  .calendar-toolbar {
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .mode-button {
+    min-width: 0;
+  }
+
+  .month-button {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .month-picker {
+    top: 42px;
+    right: 8px;
+    left: auto;
+    width: min(220px, calc(100vw - 24px));
+  }
+
+  .calendar-list {
+    padding: 8px 8px 72px;
+  }
+
+  .date-group article {
+    gap: 4px;
+    padding: 7px;
+  }
+
+  .row-actions button {
+    min-height: 22px;
+    padding: 1px 5px;
+  }
+
+  .editor-toolbar {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .mode-switch button {
+    min-width: 0;
+    padding-inline: 8px;
+  }
+
+  .save-button {
+    min-width: 64px;
+  }
+
+  .title-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .title-row input:first-child {
+    font-size: 17px;
+  }
+
+  .markdown-editor {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .markdown-line-gutter {
+    min-width: 38px;
+    padding: 14px 6px;
+    font-size: 12px;
+  }
+
+  .markdown-preview {
+    max-width: none;
+    padding: 18px 16px 80px;
+    font-size: 16px;
+  }
+
+  .editor-footer {
+    min-height: 40px;
+    gap: 8px;
+    padding: 6px 8px;
+    overflow: hidden;
+  }
+
+  .editor-footer span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .ai-panel,

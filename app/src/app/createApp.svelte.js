@@ -158,9 +158,29 @@ export function createApp() {
   }
 
   async function toggleLeftPanel() {
+    if (layout.isMobile) {
+      layout.toggleMobileView()
+      return
+    }
+
     const showList = layout.leftCollapsed
     layout.setLeftCollapsed(!showList)
     if (showList) await expandDesktopWindowForList()
+  }
+
+  function selectNote(path) {
+    notes.selectedPath = path
+    layout.showMobileEditor()
+  }
+
+  function createNote() {
+    notes.createNote()
+    layout.showMobileEditor()
+  }
+
+  async function selectHistoryVersion(version) {
+    await notes.selectHistoryVersion(repo.client, repo.repo, version)
+    layout.showMobileEditor()
   }
 
   async function expandDesktopWindowForList() {
@@ -208,6 +228,9 @@ export function createApp() {
     setTheme,
     forceSync,
     selectMonth,
+    selectNote,
+    createNote,
+    selectHistoryVersion,
     copyDeviceCode,
     syncLayoutToViewport,
     toggleLeftPanel,
