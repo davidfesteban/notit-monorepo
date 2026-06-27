@@ -94,6 +94,19 @@ test('dismisses status messages', async ({ page }) => {
   await expect(page.locator('.status-line')).toHaveCount(0)
 })
 
+test('keeps local draft after reload before GitHub sync', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  await page.getByRole('button', { name: 'New note', exact: true }).click()
+  await page.locator('.title-row input').first().fill('Persistent local note')
+  await page.locator('.title-row input').nth(1).fill('Survives app restart')
+  await page.reload()
+
+  await expect(page.locator('.title-row input').first()).toHaveValue('Persistent local note')
+  await expect(page.locator('.title-row input').nth(1)).toHaveValue('Survives app restart')
+})
+
 test('demo mode only pauses from header controls and restarts from empty workspace', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/?demo=1')

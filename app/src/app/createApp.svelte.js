@@ -39,6 +39,7 @@ export function createApp({ demo = false } = {}) {
       return
     }
 
+    await notes.loadLocalDrafts()
     await repo.loadViewer()
     await notes.loadFromRepo(repo.client, repo.repo)
   }

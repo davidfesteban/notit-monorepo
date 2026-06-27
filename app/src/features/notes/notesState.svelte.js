@@ -1,5 +1,5 @@
 import { buildMarkdown, notePathFor, parseNoteFile } from '../../shared/markdown/markdown.js'
-import { clearAllDrafts, clearDraft, loadDrafts, saveDraft } from '../../shared/storage/localDrafts.js'
+import { clearDraft, loadDrafts, saveDraft } from '../../shared/storage/localDrafts.js'
 import { loadSession, saveCommitMeta } from '../../shared/storage/sessionStorage.js'
 import { uniquePath } from '../calendar/calendarUtils.js'
 
@@ -27,6 +27,15 @@ export function createNotesState({ demo = false } = {}) {
   $effect(() => {
     if (!selectedPath && visibleNotes.length) selectedPath = visibleNotes[0].path
   })
+
+  async function loadLocalDrafts() {
+    if (demo) return
+    const drafts = await loadDrafts()
+    if (!drafts.length) return
+    notes = mergeDrafts(notes, drafts).sort(sortByUpdatedDate)
+    selectedPath = visibleNotes[0]?.path || ''
+    status = 'Local drafts restored.'
+  }
 
   async function loadFromRepo(client, repo) {
     if (demo) return
@@ -320,7 +329,6 @@ export function createNotesState({ demo = false } = {}) {
     notes = []
     selectedPath = ''
     exitHistory()
-    if (!demo) clearAllDrafts()
   }
 
   function seedDemoNotes() {
@@ -362,6 +370,7 @@ export function createNotesState({ demo = false } = {}) {
     get loading() { return loading },
     get status() { return status },
     get error() { return error },
+    loadLocalDrafts,
     loadFromRepo,
     createNote,
     saveSelected,
