@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://davidfesteban.github.io/notit-monorepo/sitemap.xml

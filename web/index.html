@@ -1,47 +1,117 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#050505" />
-    <meta
-      name="description"
-      content="Notit is an open-source Git-backed note app with no subscription, no backend, and full client-side sync."
-    />
-    <title>Notit</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <main class="page">
-      <section class="hero" aria-labelledby="title">
-        <p class="eyebrow">OPEN SOURCE / GIT NOTES / CLIENT SIDE</p>
-        <h1 id="title">Notit</h1>
-        <p class="tagline">Your vibe coded open-source Note git app.</p>
-        <p class="statement">No subscription, no backend, full client-side MCP compatible.</p>
-      </section>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#050505" />
+        <meta
+            name="description"
+            content="Notit is a vibe coded open-source Git note app. No subscription, no backend, full client-side sync, desktop and mobile ready."
+        />
+        <meta
+            name="keywords"
+            content="Notit, notes app, markdown notes, Git notes, GitHub notes, open source notes, Obsidian alternative, MCP notes"
+        />
+        <meta name="author" content="David Festeban" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://davidfesteban.github.io/notit-monorepo/" />
 
-      <section class="pitch">
-        <p>
-          Tired of Obsidian? Tired of paying subscriptions? This is the way.
-          Free multidevice sync. Change your theme. Available for desktop and app.
-        </p>
-      </section>
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Notit" />
+        <meta property="og:title" content="Notit - Open-source Git note app" />
+        <meta
+            property="og:description"
+            content="No subscription. No backend. Full client-side sync. Your vibe coded open-source Note git app."
+        />
+        <meta property="og:url" content="https://davidfesteban.github.io/notit-monorepo/" />
+        <meta property="og:image" content="https://davidfesteban.github.io/notit-monorepo/og.svg" />
+        <meta property="og:image:type" content="image/svg+xml" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
-      <section class="try" aria-labelledby="try-title">
-        <div class="try-head">
-          <h2 id="try-title">Try me</h2>
-          <a href="./app/" target="_blank" rel="noreferrer">Open full screen</a>
-        </div>
-        <div class="app-frame">
-          <iframe title="Notit app preview" src="./app/"></iframe>
-        </div>
-      </section>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Notit - Open-source Git note app" />
+        <meta
+            name="twitter:description"
+            content="No subscription. No backend. Full client-side sync. Your vibe coded open-source Note git app."
+        />
+        <meta name="twitter:image" content="https://davidfesteban.github.io/notit-monorepo/og.svg" />
 
-      <footer class="links">
-        <a href="https://github.com/davidfesteban/notit-monorepo" target="_blank" rel="noreferrer">GitHub repository</a>
-        <a href="https://github.com/davidfesteban/notit-monorepo/releases" target="_blank" rel="noreferrer">Download desktop</a>
-        <a href="https://github.com/davidfesteban/notit-monorepo/issues" target="_blank" rel="noreferrer">Do you want vibe code help?</a>
-      </footer>
-    </main>
-  </body>
+        <title>Notit - Open-source Git note app</title>
+        <link rel="stylesheet" href="./styles.css" />
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                "name": "Notit",
+                "applicationCategory": "ProductivityApplication",
+                "operatingSystem": "Web, macOS, Windows, Linux, iOS, Android",
+                "description": "Notit is a vibe coded open-source Git note app with no subscription, no backend, and full client-side sync.",
+                "url": "https://davidfesteban.github.io/notit-monorepo/",
+                "codeRepository": "https://github.com/davidfesteban/notit-monorepo",
+                "author": {
+                    "@type": "Person",
+                    "name": "David Festeban"
+                },
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <main class="page">
+            <section class="hero" aria-labelledby="title">
+                <p class="eyebrow">OPEN SOURCE / GIT NOTES / CLIENT SIDE</p>
+                <h1 id="title">Notit</h1>
+                <p class="tagline">Your vibe coded open-source Note git app.</p>
+                <p class="statement">
+                    No subscription, no backend, full client-side MCP
+                    compatible. Desktop and App.
+                </p>
+            </section>
+
+            <section class="pitch">
+                <p>
+                    Tired of Obsidian? This is the way. Free multidevice sync.
+                    Your theme. Your platform.
+                </p>
+            </section>
+
+            <section class="try" aria-labelledby="try-title">
+                <div class="try-head">
+                    <h2 id="try-title">Try me</h2>
+                    <a href="./app/" target="_blank" rel="noreferrer"
+                        >Open full screen</a
+                    >
+                </div>
+                <div class="app-frame">
+                    <iframe title="Notit app preview" src="./app/"></iframe>
+                </div>
+            </section>
+
+            <footer class="links">
+                <a
+                    href="https://github.com/davidfesteban/notit-monorepo"
+                    target="_blank"
+                    rel="noreferrer"
+                    >GitHub repository</a
+                >
+                <a
+                    href="https://github.com/davidfesteban/notit-monorepo/releases"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Download desktop</a
+                >
+                <a
+                    href="https://github.com/davidfesteban/notit-monorepo/issues"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Do you want vibe code help?</a
+                >
+            </footer>
+        </main>
+    </body>
 </html>
