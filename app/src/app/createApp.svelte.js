@@ -42,6 +42,7 @@ export function createApp({ demo = false } = {}) {
     await notes.loadLocalDrafts()
     await repo.loadViewer()
     await notes.loadFromRepo(repo.client, repo.repo)
+    queueLocalDraftsWhenRepoReady()
   }
 
   async function useRepo(createIfMissing) {
@@ -49,6 +50,12 @@ export function createApp({ demo = false } = {}) {
     if (!selectedRepo) return
     layout.repoOpen = false
     await notes.loadFromRepo(repo.client, repo.repo)
+    queueLocalDraftsWhenRepoReady()
+  }
+
+  function queueLocalDraftsWhenRepoReady() {
+    if (!repo.client || !repo.repo.owner || !repo.repo.name) return
+    notes.queueLocalDraftsForSync()
   }
 
   function disconnect() {

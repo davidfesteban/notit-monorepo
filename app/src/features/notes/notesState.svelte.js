@@ -100,7 +100,7 @@ export function createNotesState({ demo = false } = {}) {
 
     try {
       const pendingDeletes = notes.filter((note) => note.pendingDelete)
-      const pendingSaves = notes.filter((note) => note.pendingSync && !note.pendingDelete)
+      const pendingSaves = notes.filter((note) => !note.pendingDelete && (note.pendingSync || (note.dirty && !note.commitSha)))
       for (const note of pendingDeletes) await pushDelete(client, repo, note)
       for (const note of pendingSaves) await pushNote(client, repo, note, reason)
     } finally {
@@ -306,6 +306,21 @@ export function createNotesState({ demo = false } = {}) {
     persistLocalDraft(next)
   }
 
+  function queueLocalDraftsForSync() {
+    const queuedPaths = new Set()
+    const nextNotes = notes.map((note) => {
+      if (!note.dirty || note.commitSha || note.pendingSync) return note
+      queuedPaths.add(note.path)
+      return { ...note, pendingSync: true }
+    })
+    if (!queuedPaths.size) return
+    notes = nextNotes
+    for (const note of nextNotes) {
+      if (queuedPaths.has(note.path)) persistLocalDraft(note)
+    }
+    status = 'Local drafts queued for GitHub sync.'
+  }
+
   function markSavedLocally(note) {
     if (!note) return
     const next = { ...note, dirty: false, pendingSync: true, updatedDate: new Date().toISOString() }
@@ -372,6 +387,7 @@ export function createNotesState({ demo = false } = {}) {
     get error() { return error },
     loadLocalDrafts,
     loadFromRepo,
+    queueLocalDraftsForSync,
     createNote,
     saveSelected,
     syncPending,
