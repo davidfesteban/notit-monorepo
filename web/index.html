@@ -47,7 +47,34 @@
         <script defer src="https://analytics.misei.dev/script.js"></script>
         <script>
             if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-            window.addEventListener("pageshow", () => window.scrollTo(0, 0));
+            const keepAtTop = () => window.scrollTo(0, 0);
+            window.addEventListener("pageshow", keepAtTop);
+            window.addEventListener("load", () => {
+                keepAtTop();
+                requestAnimationFrame(keepAtTop);
+                setTimeout(keepAtTop, 250);
+            });
+
+            window.addEventListener("DOMContentLoaded", () => {
+                const iframe = document.querySelector("[data-demo-src]");
+                if (!iframe) return;
+
+                const loadDemo = () => {
+                    if (iframe.src) return;
+                    iframe.src = iframe.dataset.demoSrc;
+                };
+
+                if (!("IntersectionObserver" in window)) return;
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        if (!entries.some((entry) => entry.isIntersecting)) return;
+                        observer.disconnect();
+                        loadDemo();
+                    },
+                    { rootMargin: "240px" },
+                );
+                observer.observe(iframe);
+            });
         </script>
         <script type="application/ld+json">
             {
@@ -142,7 +169,7 @@
                     >
                 </div>
                 <div class="app-frame">
-                    <iframe title="Notit app preview" src="./app/?demo=1" loading="lazy" tabindex="-1"></iframe>
+                    <iframe title="Notit app preview" data-demo-src="./app/?demo=1" tabindex="-1"></iframe>
                 </div>
             </section>
 
