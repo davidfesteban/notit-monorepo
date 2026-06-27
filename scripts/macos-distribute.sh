@@ -28,7 +28,17 @@ require_cmd() {
 valid_identity() {
   local pattern="$1"
   security find-identity -v -p codesigning \
-    | awk -v pattern="$pattern" '$0 !~ /REVOKED|CSSMERR/ && $0 ~ pattern { match($0, /"[^"]+"/); print substr($0, RSTART + 1, RLENGTH - 2); exit }'
+    | awk -v pattern="$pattern" '$0 !~ /REVOKED|CSSMERR/ && $0 ~ pattern { print $2; exit }'
+}
+
+installer_identity_from_cert() {
+  local cert="$1"
+  if [[ ! -f "$cert" ]]; then
+    return 1
+  fi
+  openssl x509 -inform DER -in "$cert" -noout -fingerprint -sha1 \
+    | cut -d= -f2 \
+    | tr -d ':'
 }
 
 find_profile() {
@@ -52,7 +62,7 @@ require_cmd pkgutil
 source "$HOME/.cargo/env"
 
 APP_SIGNING_IDENTITY="${APPLE_SIGNING_IDENTITY:-$(valid_identity "Apple Distribution: .*\\($TEAM_ID\\)")}"
-INSTALLER_SIGNING_IDENTITY="${APPLE_INSTALLER_SIGNING_IDENTITY:-$(valid_identity "(3rd Party Mac Developer Installer|Mac Installer Distribution): .*\\($TEAM_ID\\)")}"
+INSTALLER_SIGNING_IDENTITY="${APPLE_INSTALLER_SIGNING_IDENTITY:-$(installer_identity_from_cert "$APPSTORE_DIR/mac_installer.cer" || installer_identity_from_cert "$APPSTORE_DIR/mac-installer.cer" || true)}"
 PROFILE_PATH="${MACOS_PROVISION_PROFILE:-$(find_profile || true)}"
 
 if [[ -z "$APP_SIGNING_IDENTITY" ]]; then
