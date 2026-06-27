@@ -23,7 +23,7 @@
 
 <section class="repo-panel ai-panel">
   <div class="ai-heading">
-    <img src="/notit_logo.svg" alt="" />
+    <img src="./notit_gpt_icon.png" alt="" />
     <div>
       <strong>AI</strong>
       <span>Use the Notit GPT with GitHub as the connector. No Notit backend required.</span>

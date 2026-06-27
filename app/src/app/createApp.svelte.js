@@ -210,7 +210,8 @@ export function createApp({ demo = false } = {}) {
 
   function startDemo() {
     if (!demo || demoTimer) return stopDemo
-    demoTimer = setInterval(runDemoStep, 2200)
+    runDemoStep()
+    demoTimer = setInterval(runDemoStep, 950)
     return stopDemo
   }
 
@@ -222,20 +223,58 @@ export function createApp({ demo = false } = {}) {
 
   function runDemoStep() {
     const steps = [
+      resetDemo,
       () => setTheme('notit-dark'),
-      () => layout.setLeftCollapsed(false),
-      () => selectNote('notes/launch-checklist.md'),
-      () => { editor.mode = 'markdown' },
-      () => editor.insertMarkdown('- [ ] Capture idea', '', ''),
-      () => createNote(),
-      () => { editor.mode = 'visual' },
-      () => layout.setLeftCollapsed(true, true),
       () => setTheme('zed-slim'),
       () => setTheme('retro'),
+      () => layout.setLeftCollapsed(true),
+      () => {
+        createNote()
+        editor.mode = 'markdown'
+        notes.updateSelected({
+          title: 'AI launch note',
+          description: 'Written in Markdown',
+          body: '# AI launch note\n\n- [ ] Ship Mac app\n- [ ] Submit iOS build\n\n```mermaid\nflowchart LR\n  Notit --> GitHub\n  GitHub --> ChatGPT\n```',
+        })
+      },
+      () => setTheme('notit-dark'),
+      () => { editor.mode = 'visual' },
+      () => layout.setLeftCollapsed(false),
+      () => {
+        layout.aiOpen = true
+        layout.settingsOpen = false
+      },
+      () => {
+        layout.aiOpen = false
+        layout.settingsOpen = true
+      },
+      () => {
+        autosaveEnabled = false
+        showSyncCountdown = false
+        showCodeLineNumbers = false
+        strikeCompletedTasks = false
+        showMarkdownLineNumbers = false
+      },
     ]
 
     steps[demoStep % steps.length]()
     demoStep += 1
+  }
+
+  function resetDemo() {
+    notes.seedDemoNotes()
+    editor.mode = 'visual'
+    setTheme('retro')
+    layout.setLeftCollapsed(false)
+    layout.mobileView = 'editor'
+    layout.aiOpen = false
+    layout.repoOpen = false
+    layout.settingsOpen = false
+    autosaveEnabled = true
+    showSyncCountdown = true
+    showCodeLineNumbers = true
+    strikeCompletedTasks = true
+    showMarkdownLineNumbers = true
   }
 
   function formatSyncCountdown() {

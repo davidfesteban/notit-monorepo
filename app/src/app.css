@@ -644,6 +644,7 @@ input {
   min-width: 0;
   flex-direction: column;
   background: #f8f9fb;
+  container-type: inline-size;
 }
 
 .editor-toolbar {
@@ -672,9 +673,15 @@ input {
 
 .tools {
   display: flex;
+  flex: 1 1 auto;
   min-width: 0;
   gap: 6px;
   margin-left: 8px;
+  overflow: hidden;
+}
+
+.tools button {
+  flex: 0 0 auto;
 }
 
 .tool-menu {
@@ -718,6 +725,21 @@ input {
 }
 
 @media (max-width: 1120px) {
+  .tools {
+    display: none;
+  }
+
+  .tool-menu {
+    display: block;
+  }
+
+  .editor-toolbar {
+    gap: 6px;
+    padding: 8px;
+  }
+}
+
+@container (max-width: 780px) {
   .tools {
     display: none;
   }
@@ -1213,7 +1235,12 @@ input {
 .theme-notit-dark .markdown-preview h2,
 .theme-notit-dark .notice a,
 .theme-notit-dark .sync-pill,
-.theme-notit-dark .date-group article.active {
+.theme-notit-dark .date-group article.active,
+.theme-notit-dark .date-group h2,
+.theme-notit-dark .note-select,
+.theme-notit-dark .note-select strong,
+.theme-notit-dark .ai-heading strong,
+.theme-notit-dark .repo-panel strong {
   color: #ffffff;
 }
 
