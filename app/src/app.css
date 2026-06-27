@@ -60,6 +60,12 @@ button:disabled {
   background: #f4f5f7;
 }
 
+@supports (height: 100dvh) {
+  .app-shell {
+    height: 100dvh;
+  }
+}
+
 .topbar {
   display: grid;
   grid-template-columns: minmax(260px, var(--left)) 8px minmax(0, 1fr);
@@ -772,6 +778,10 @@ input {
 }
 
 @media (max-width: 760px) {
+  .app-shell {
+    padding-top: env(safe-area-inset-top);
+  }
+
   .topbar {
     grid-template-columns: minmax(0, 1fr);
     gap: 6px;
@@ -853,7 +863,7 @@ input {
   }
 
   .calendar-list {
-    padding: 8px 8px 72px;
+    padding: 8px 8px calc(72px + env(safe-area-inset-bottom));
   }
 
   .calendar-search {
@@ -914,7 +924,7 @@ input {
   .editor-footer {
     min-height: 40px;
     gap: 8px;
-    padding: 6px 8px;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
     overflow: hidden;
   }
 

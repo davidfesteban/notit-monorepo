@@ -38,7 +38,7 @@ find_profile() {
       printf '%s\n' "$profile"
       return 0
     fi
-  done < <(find "$HOME/Library/MobileDevice/Provisioning Profiles" -maxdepth 1 -type f \( -name '*.provisionprofile' -o -name '*.mobileprovision' \) 2>/dev/null)
+  done < <(find "$APPSTORE_DIR" "$HOME/Library/MobileDevice/Provisioning Profiles" -maxdepth 1 -type f \( -name '*.provisionprofile' -o -name '*.mobileprovision' \) 2>/dev/null)
   return 1
 }
 
