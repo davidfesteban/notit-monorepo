@@ -26,12 +26,16 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/app/
           VITE_GITHUB_CLIENT_ID: ${{ vars.VITE_GITHUB_CLIENT_ID || secrets.VITE_GITHUB_CLIENT_ID }}
+      - run: |
+          mkdir -p pages-dist/app
+          cp -R app/dist/. pages-dist/app/
+          cp -R web/. pages-dist/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: app/dist
+          path: pages-dist
 
   deploy:
     environment:
