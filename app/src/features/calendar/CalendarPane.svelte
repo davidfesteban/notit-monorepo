@@ -115,8 +115,8 @@
     <div class="empty-state">Constellation comes later. Calendar is active for v1.</div>
   {:else}
     <div class="calendar-list" bind:this={listElement}>
-      {#if !notes.length}
-        <div class="empty-state">No notes yet.</div>
+      {#if !Object.keys(groups).length}
+        <div class="empty-state">No notes in this month.</div>
       {/if}
 
       {#each Object.entries(groups) as [date, dateNotes]}

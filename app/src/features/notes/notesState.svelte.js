@@ -14,11 +14,12 @@ export function createNotesState() {
   let selectedHistoryNote = $state(null)
   let commitMeta = $state(session.commitMeta || {})
   let loading = $state(false)
+  let syncing = false
   let status = $state('')
   let error = $state('')
 
   const visibleNotes = $derived(notes.filter((note) => !note.pendingDelete))
-  const selectedNote = $derived(selectedHistoryNote || visibleNotes.find((note) => note.path === selectedPath) || visibleNotes[0] || null)
+  const selectedNote = $derived(selectedHistoryNote || (selectedPath ? visibleNotes.find((note) => note.path === selectedPath) || null : visibleNotes[0] || null))
   const hasDirtyDrafts = $derived(notes.some((note) => note.dirty))
   const hasPendingGithubChanges = $derived(notes.some((note) => note.pendingSync || note.pendingDelete))
 
@@ -55,7 +56,7 @@ export function createNotesState() {
 
   function createNote() {
     const title = 'Untitled note'
-    const createdDate = new Date().toISOString().slice(0, 10)
+    const createdDate = new Date().toISOString()
     const path = uniquePath(notePathFor(title), notes)
     const note = {
       id: path,
@@ -68,13 +69,13 @@ export function createNotesState() {
       commitSha: '',
       fileSha: '',
       dirty: true,
-      pendingSync: true,
+      pendingSync: false,
     }
 
     notes = [note, ...notes]
     selectedPath = path
     persistDraft(note)
-    status = 'New local note. GitHub will sync on the next autosave.'
+    status = 'New local draft. Save it when it is ready to sync.'
   }
 
   async function saveSelected() {
@@ -83,11 +84,17 @@ export function createNotesState() {
   }
 
   async function syncPending(client, repo, reason = 'autosave') {
-    if (!client || !repo.owner || !repo.name || loading) return
-    const pendingDeletes = notes.filter((note) => note.pendingDelete)
-    const pendingSaves = notes.filter((note) => note.pendingSync && !note.pendingDelete)
-    for (const note of pendingDeletes) await pushDelete(client, repo, note)
-    for (const note of pendingSaves) await pushNote(client, repo, note, reason)
+    if (!client || !repo.owner || !repo.name || loading || syncing) return
+    syncing = true
+
+    try {
+      const pendingDeletes = notes.filter((note) => note.pendingDelete)
+      const pendingSaves = notes.filter((note) => note.pendingSync && !note.pendingDelete)
+      for (const note of pendingDeletes) await pushDelete(client, repo, note)
+      for (const note of pendingSaves) await pushNote(client, repo, note, reason)
+    } finally {
+      syncing = false
+    }
   }
 
   async function pushNote(client, repo, note, reason) {
@@ -183,7 +190,7 @@ export function createNotesState() {
       commitSha: '',
       updatedDate: new Date().toISOString(),
       dirty: true,
-      pendingSync: true,
+      pendingSync: false,
     }
 
     notes = [copy, ...notes]
@@ -245,15 +252,15 @@ export function createNotesState() {
 
   function updateSelected(patch) {
     if (!selectedNote || selectedHistoryNote) return
-    const next = { ...selectedNote, ...patch, dirty: true, pendingSync: true }
+    const next = { ...selectedNote, ...patch, dirty: true }
     notes = notes.map((note) => (note.path === selectedNote.path ? next : note))
     persistDraft(next)
   }
 
   function markSavedLocally(note) {
     if (!note) return
-    const next = { ...note, dirty: false, pendingSync: true }
-    notes = notes.map((item) => (item.path === note.path ? next : item))
+    const next = { ...note, dirty: false, pendingSync: true, updatedDate: new Date().toISOString() }
+    notes = notes.map((item) => (item.path === note.path ? next : item)).sort(sortByUpdatedDate)
     persistDraft(next)
     status = 'Saved locally. GitHub will sync on the next autosave.'
   }

@@ -1,11 +1,12 @@
-import { filterNotes, groupByDate, monthYearLabel } from './calendarUtils.js'
+import { filterNotes, groupByDate, monthKey, monthYearLabel } from './calendarUtils.js'
 
 export function createCalendarState(notesState) {
   let search = $state('')
   let visualization = $state('calendar')
   let selectedMonth = $state(monthValue(new Date()))
 
-  const filteredNotes = $derived(filterNotes(notesState.notes, search))
+  const searchNotes = $derived(filterNotes(notesState.notes, search))
+  const filteredNotes = $derived(searchNotes.filter((note) => monthKey(note.updatedDate) === selectedMonth))
   const groups = $derived(groupByDate(filteredNotes))
   const currentMonth = $derived(monthYearLabel(`${selectedMonth}-01T00:00:00`))
 
@@ -20,6 +21,7 @@ export function createCalendarState(notesState) {
     get selectedMonth() { return selectedMonth },
     set selectedMonth(value) { selectedMonth = value || monthValue(new Date()) },
     get filteredNotes() { return filteredNotes },
+    get searchNotes() { return searchNotes },
     get groups() { return groups },
     get monthLabel() { return currentMonth },
     toggleVisualization,

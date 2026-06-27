@@ -14,7 +14,10 @@ export function createApp() {
   const layout = createLayoutState()
   let autosaveEnabled = $state(session.settings?.autosaveEnabled !== false)
   let autosaveMinutes = $state(session.settings?.autosaveMinutes || 5)
+  let showSyncCountdown = $state(session.settings?.showSyncCountdown !== false)
+  let syncRemainingSeconds = $state((session.settings?.autosaveMinutes || 5) * 60)
   let autosaveTimer = null
+  let syncing = false
 
   const loading = $derived(repo.loading || notes.loading)
   const status = $derived(notes.status || repo.status)
@@ -39,26 +42,56 @@ export function createApp() {
 
   function setAutosaveEnabled(value) {
     autosaveEnabled = value
-    saveSettings({ autosaveEnabled, autosaveMinutes })
+    saveSettings({ autosaveEnabled, autosaveMinutes, showSyncCountdown })
     startAutosave()
   }
 
   function setAutosaveMinutes(value) {
     autosaveMinutes = Number(value) === 10 ? 10 : 5
-    saveSettings({ autosaveEnabled, autosaveMinutes })
+    syncRemainingSeconds = autosaveMinutes * 60
+    saveSettings({ autosaveEnabled, autosaveMinutes, showSyncCountdown })
     startAutosave()
+  }
+
+  function setShowSyncCountdown(value) {
+    showSyncCountdown = value
+    saveSettings({ autosaveEnabled, autosaveMinutes, showSyncCountdown })
   }
 
   function startAutosave() {
     stopAutosave()
-    autosaveTimer = setInterval(() => {
-      if (autosaveEnabled) notes.syncPending(repo.client, repo.repo, 'autosave')
-    }, autosaveMinutes * 60 * 1000)
+    syncRemainingSeconds = autosaveMinutes * 60
+    autosaveTimer = setInterval(tickAutosave, 1000)
     return stopAutosave
   }
 
   async function forceSync() {
-    await notes.syncPending(repo.client, repo.repo, 'manual')
+    if (syncing) return
+    syncing = true
+    syncRemainingSeconds = autosaveMinutes * 60
+    try {
+      await notes.syncPending(repo.client, repo.repo, 'manual')
+    } finally {
+      syncing = false
+    }
+  }
+
+  async function tickAutosave() {
+    if (!autosaveEnabled || !notes.hasPendingGithubChanges) {
+      syncRemainingSeconds = autosaveMinutes * 60
+      return
+    }
+
+    syncRemainingSeconds = Math.max(0, syncRemainingSeconds - 1)
+    if (syncRemainingSeconds > 0 || syncing) return
+
+    syncing = true
+    try {
+      await notes.syncPending(repo.client, repo.repo, 'autosave')
+    } finally {
+      syncing = false
+    }
+    syncRemainingSeconds = autosaveMinutes * 60
   }
 
   function stopAutosave() {
@@ -73,6 +106,24 @@ export function createApp() {
     event.returnValue = ''
   }
 
+  function selectMonth(month) {
+    calendar.selectedMonth = month
+    notes.selectedPath = calendar.filteredNotes[0]?.path || '__notit_empty_month__'
+  }
+
+  async function copyDeviceCode(code) {
+    if (!code) return
+    await navigator.clipboard.writeText(code)
+    repo.setStatus('GitHub code copied.')
+  }
+
+  function formatSyncCountdown() {
+    if (!autosaveEnabled) return 'paused'
+    const minutes = Math.floor(syncRemainingSeconds / 60)
+    const seconds = String(syncRemainingSeconds % 60).padStart(2, '0')
+    return `${minutes}:${seconds}`
+  }
+
   return {
     repo,
     notes,
@@ -81,10 +132,15 @@ export function createApp() {
     layout,
     get autosaveEnabled() { return autosaveEnabled },
     get autosaveMinutes() { return autosaveMinutes },
+    get showSyncCountdown() { return showSyncCountdown },
     get syncStatus() { return notes.hasPendingGithubChanges ? 'Unsync' : 'Synced' },
+    get syncCountdown() { return formatSyncCountdown() },
     setAutosaveEnabled,
     setAutosaveMinutes,
+    setShowSyncCountdown,
     forceSync,
+    selectMonth,
+    copyDeviceCode,
     get loading() { return loading },
     get status() { return status },
     get error() { return error },

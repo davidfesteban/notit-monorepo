@@ -4,6 +4,7 @@ const oauthBase = import.meta.env.DEV ? '/github-oauth' : 'https://github.com'
 export class GitHubClient {
   constructor(token) {
     this.token = token
+    this.branchHeads = new Map()
   }
 
   async viewer() {
@@ -70,40 +71,60 @@ export class GitHubClient {
   }
 
   async commitFiles(owner, repo, { message, additions = [], deletions = [] }) {
-    const head = await this.request(`/repos/${owner}/${repo}/git/ref/heads/master`)
-    const result = await this.graphql(
-      `mutation CommitFiles($input: CreateCommitOnBranchInput!) {
-        createCommitOnBranch(input: $input) {
-          commit {
-            oid
-            committedDate
-          }
-        }
-      }`,
-      {
-        input: {
-          branch: {
-            repositoryNameWithOwner: `${owner}/${repo}`,
-            branchName: 'master',
-          },
-          message: { headline: message },
-          expectedHeadOid: head.object.sha,
-          fileChanges: {
-            additions: additions.map((file) => ({
-              path: file.path,
-              contents: file.contentBase64,
-            })),
-            deletions: deletions.map((path) => ({ path })),
-          },
-        },
-      },
-    )
+    const maxAttempts = 5
+    const branchKey = `${owner}/${repo}:master`
 
-    const commit = result.createCommitOnBranch.commit
-    return {
-      commitSha: commit.oid,
-      commitDate: commit.committedDate || new Date().toISOString(),
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+      const expectedHeadOid = this.branchHeads.get(branchKey) || (await this.currentBranchHead(owner, repo))
+      try {
+        const result = await this.graphql(
+          `mutation CommitFiles($input: CreateCommitOnBranchInput!) {
+            createCommitOnBranch(input: $input) {
+              commit {
+                oid
+                committedDate
+              }
+            }
+          }`,
+          {
+            input: {
+              branch: {
+                repositoryNameWithOwner: `${owner}/${repo}`,
+                branchName: 'master',
+              },
+              message: { headline: message },
+              expectedHeadOid,
+              fileChanges: {
+                additions: additions.map((file) => ({
+                  path: file.path,
+                  contents: file.contentBase64,
+                })),
+                deletions: deletions.map((path) => ({ path })),
+              },
+            },
+          },
+        )
+
+        const commit = result.createCommitOnBranch.commit
+        this.branchHeads.set(branchKey, commit.oid)
+        return {
+          commitSha: commit.oid,
+          commitDate: commit.committedDate || new Date().toISOString(),
+        }
+      } catch (error) {
+        if (isBranchHeadConflict(error) && attempt < maxAttempts - 1) {
+          this.branchHeads.delete(branchKey)
+          await sleep(350 * (attempt + 1))
+          continue
+        }
+        throw error
+      }
     }
+  }
+
+  async currentBranchHead(owner, repo) {
+    const head = await this.request(`/repos/${owner}/${repo}/git/ref/heads/master?cachebust=${Date.now()}`)
+    return head.object.sha
   }
 
   async listNoteHistory(owner, repo, path) {
@@ -235,4 +256,12 @@ function decodeBase64(value) {
   const binary = atob(String(value).replace(/\s/g, ''))
   const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0))
   return new TextDecoder().decode(bytes)
+}
+
+function isBranchHeadConflict(error) {
+  return String(error?.message || '').includes('Expected branch to point to')
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }

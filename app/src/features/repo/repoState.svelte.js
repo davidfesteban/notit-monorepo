@@ -132,6 +132,10 @@ export function createRepoState() {
     status = ''
   }
 
+  function setStatus(value) {
+    status = value
+  }
+
   return {
     get token() { return token },
     get repo() { return repo },
@@ -149,6 +153,7 @@ export function createRepoState() {
     loadViewer,
     useRepo,
     disconnect,
+    setStatus,
   }
 }
 

@@ -4,6 +4,8 @@
   export let loading = false
   export let search = ''
   export let syncStatus = 'Synced'
+  export let syncCountdown = ''
+  export let showSyncCountdown = true
   export let onConnect = () => {}
   export let onForceSync = () => {}
   export let onSearch = () => {}
@@ -27,7 +29,10 @@
   <div class="sync-group">
     <span class:unsynced={syncStatus === 'Unsync'} class="sync-pill">
       <span aria-hidden="true">{syncStatus === 'Unsync' ? '○' : '●'}</span>
-      {syncStatus}
+      <span>{syncStatus}</span>
+      {#if syncStatus === 'Unsync' && showSyncCountdown && syncCountdown}
+        <small>{syncCountdown}</small>
+      {/if}
     </span>
     <button class="top-action" type="button" onclick={onForceSync} disabled={loading || !token || syncStatus !== 'Unsync'}>Force Sync</button>
   </div>

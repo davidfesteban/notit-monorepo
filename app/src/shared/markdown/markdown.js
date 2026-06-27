@@ -6,6 +6,10 @@ const renderer = {
     if (String(token.lang || '').trim().toLowerCase() === 'mermaid') {
       return `<div class="mermaid" data-source="${escapeHtml(token.text)}">${escapeHtml(token.text)}</div>`
     }
+    if (String(token.lang || '').trim().toLowerCase().startsWith('notit-code')) {
+      const title = codeBlockTitle(token.lang) || 'Code'
+      return `<details class="notit-code"><summary>${escapeHtml(title)}</summary><pre><code>${escapeHtml(token.text)}</code></pre></details>`
+    }
 
     const lang = token.lang ? ` class="language-${escapeHtml(token.lang)}"` : ''
     return `<pre><code${lang}>${escapeHtml(token.text)}</code></pre>`
@@ -20,8 +24,8 @@ marked.use({
 
 export function renderMarkdown(markdown) {
   return DOMPurify.sanitize(marked.parse(markdown || ''), {
-    ADD_TAGS: ['input'],
-    ADD_ATTR: ['checked', 'class', 'data-source', 'type'],
+    ADD_TAGS: ['input', 'details', 'summary'],
+    ADD_ATTR: ['checked', 'class', 'data-source', 'open', 'type'],
     FORBID_ATTR: ['disabled'],
   })
 }
@@ -117,6 +121,11 @@ function splitFrontmatter(markdown) {
   }
 
   return { attributes, body }
+}
+
+function codeBlockTitle(lang) {
+  const match = String(lang || '').match(/title=(?:"([^"]+)"|'([^']+)'|([^ ]+))/)
+  return match?.[1] || match?.[2] || match?.[3] || ''
 }
 
 function quoteYaml(value) {

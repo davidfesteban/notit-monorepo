@@ -79,6 +79,7 @@
       <button type="button" onclick={() => insert('- [ ] ', '', 'Task')} disabled={readOnly}>☐</button>
       <button type="button" onclick={() => insert('| A | B |\n| --- | --- |\n| 1 | 2 |')} disabled={readOnly}>Table</button>
       <button type="button" onclick={() => insert('```mermaid\n', '\n```', 'flowchart TD\n  A --> B')} disabled={readOnly}>Diagram</button>
+      <button type="button" onclick={() => insert('```notit-code title=\"Code\"\n', '\n```', 'console.log(\"later\")')} disabled={readOnly}>Code</button>
     </div>
 
     <button class="save-button" type="button" onclick={onSave} disabled={loading || !selectedNote || readOnly}>Save</button>

@@ -26,6 +26,8 @@
     user={app.repo.user}
     loading={app.loading}
     syncStatus={app.syncStatus}
+    syncCountdown={app.syncCountdown}
+    showSyncCountdown={app.showSyncCountdown}
     onConnect={app.repo.connect}
     onForceSync={app.forceSync}
     onSearch={(value) => (app.calendar.search = value)}
@@ -36,7 +38,9 @@
 
   {#if app.repo.device}
     <section class="notice">
-      <strong>{app.repo.device.user_code}</strong>
+      <button class="device-code" type="button" title="Copy GitHub code" onclick={() => app.copyDeviceCode(app.repo.device.user_code)}>
+        {app.repo.device.user_code}
+      </button>
       <span>Open <a href={app.repo.device.verification_uri} target="_blank" rel="noreferrer">{app.repo.device.verification_uri}</a> and enter the code.</span>
     </section>
   {/if}
@@ -64,16 +68,17 @@
   {#if app.layout.settingsOpen}
     <section class="repo-panel">
       <strong>Setting</strong>
-      <label class="setting-check">
+      <label class="setting-row">
         <input type="checkbox" checked={app.autosaveEnabled} onchange={(event) => app.setAutosaveEnabled(event.currentTarget.checked)} />
         <span>Autosave to GitHub</span>
-      </label>
-      <label class="setting-check">
-        <span>Every</span>
         <select onchange={(event) => app.setAutosaveMinutes(event.currentTarget.value)}>
           <option value="5" selected={app.autosaveMinutes === 5}>5 minutes</option>
           <option value="10" selected={app.autosaveMinutes === 10}>10 minutes</option>
         </select>
+      </label>
+      <label class="setting-row">
+        <input type="checkbox" checked={app.showSyncCountdown} onchange={(event) => app.setShowSyncCountdown(event.currentTarget.checked)} />
+        <span>Show sync countdown</span>
       </label>
     </section>
   {/if}
@@ -88,13 +93,13 @@
       monthLabel={app.calendar.monthLabel}
       selectedMonth={app.calendar.selectedMonth}
       groups={app.calendar.groups}
-      notes={app.calendar.filteredNotes}
+      notes={app.calendar.searchNotes}
       historyMode={app.notes.historyMode}
       historyVersions={app.notes.historyVersions}
       historyBaseNote={app.notes.historyBaseNote}
       selectedPath={app.notes.selectedPath}
       onToggleVisualization={app.calendar.toggleVisualization}
-      onSelectMonth={(month) => (app.calendar.selectedMonth = month)}
+      onSelectMonth={app.selectMonth}
       onSelect={(path) => (app.notes.selectedPath = path)}
       onDelete={(note) => app.notes.deleteNote(app.repo.client, app.repo.repo, note)}
       onHistory={(note) => app.notes.showHistory(app.repo.client, app.repo.repo, note)}
